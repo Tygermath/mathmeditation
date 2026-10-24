@@ -143,13 +143,13 @@ const UI={
   reset:X('Reset all progress','清除所有進度','Réinitialiser la progression'),
   resetConfirm:X('Reset all progress? (Uploaded files are kept.)','要清除所有進度嗎？（已上傳的檔案會保留。）','Réinitialiser toute la progression ? (Les fichiers envoyés sont conservés.)'),
   vol:X('Vol','冊','Vol.'), chapter:X('Chapter','章','Chapitre'), section:X('Section','節','Section'), trick:X('Trick','口訣','Astuce'),
-  tabTrick:X('① Mnemonic','① 口訣','① Mnémonique'), tabPicture:X('② Visual','② 圖像','② Visuel'), tabExemplar:X('③ Exemplars','③ 啟蒙題/典範題','③ Problèmes modèles'), tabRandom:X('④ Random practice','④ 隨機練習題','④ Exercices aléatoires'),
+  tabTrick:X('① Catchy phrase','① 口訣','① Phrase accrocheuse'), tabPicture:X('② Visual aid','② 圖像','② Aide visuelle'), tabExemplar:X('③ Exemplars','③ 啟蒙題/典範題','③ Problèmes modèles'), tabRandom:X('④ Random practice','④ 隨機練習題','④ Exercices aléatoires'),
   exDone:X('Done','已完成','Terminé'), exNote:X('Compare the answers side by side','並排比較各題的答案','Comparez les réponses côte à côte'),
   checkAll:X('Check all','全部檢查','Tout vérifier'), okShort:X('Correct','答對了','Correct'), badShort:X('Try again','再試一次','Réessayez'),
   prev:X('Previous','上一題','Précédent'), next:X('Next','下一題','Suivant'), toRandom:X('Random practice','隨機練習題','Exercices aléatoires'), again:X('Do it again ↻','再做一次 ↻','Refaire ↻'),
   mastered:X('★ Mastered','★ 已精熟','★ Maîtrisé'),
   welcomeT:X('Welcome 👋','歡迎 👋','Bienvenue 👋'),
-  welcome1:X('Pick a <b>trick</b> from the menu. Each trick has a <b>Mnemonic</b>, a <b>Visual</b>, <b>Exemplar problems</b> and <b>Random practice</b>.','從左邊選單挑選一個<b>口訣</b>。每個口訣有「口訣」、「圖像」、「啟蒙題/典範題」和「隨機練習題」四個頁面。','Choisissez une <b>astuce</b> dans le menu. Chaque astuce a une page <b>Mnémonique</b>, une page <b>Visuel</b>, des <b>Problèmes modèles</b> et des <b>Exercices aléatoires</b>.'),
+  welcome1:X('Pick a <b>trick</b> from the menu. Each trick has a <b>Catchy phrase</b>, a <b>Visual aid</b>, <b>Exemplar problems</b> and <b>Random practice</b>.','從左邊選單挑選一個<b>口訣</b>。每個口訣有「口訣」、「圖像」、「啟蒙題/典範題」和「隨機練習題」四個頁面。','Choisissez une <b>astuce</b> dans le menu. Chaque astuce a une page <b>Phrase accrocheuse</b>, une page <b>Aide visuelle</b>, des <b>Problèmes modèles</b> et des <b>Exercices aléatoires</b>.'),
   welcome2:X('Get <b>3 correct in a row</b> to earn a ★ for that trick.','連續<b>答對 3 題</b>就能得到該口訣的 ★。','Obtenez <b>3 bonnes réponses d’affilée</b> pour gagner une ★.'),
   goPractice:X('Practice this trick →','練習這個口訣 →','S’entraîner →'),
   elab:X('Elaboration','詳細說明','Développement'),
@@ -169,7 +169,7 @@ const UI={
   okFirst:X('✓ Correct! Well done.','✓ 答對了！做得好。','✓ Correct ! Bravo.'),
   okMaster:X('✓ Correct! ★ You mastered this trick!','✓ 答對了！★ 你已精熟這個口訣！','✓ Correct ! ★ Vous maîtrisez cette astuce !'),
   okLater:X('✓ Correct — now try a similar question.','✓ 答對了 — 再試一題類似題吧。','✓ Correct — essayez maintenant une question similaire.'),
-  bad1:X('✗ Not quite — look at the question again and try once more, or open the Mnemonic page.','✗ 不太對 — 再看一次題目，再試一次，或看「口訣」頁。','✗ Pas tout à fait — relisez la question et réessayez, ou ouvrez la page Mnémonique.'),
+  bad1:X('✗ Not quite — look at the question again and try once more, or open the Catchy phrase page.','✗ 不太對 — 再看一次題目，再試一次，或看「口訣」頁。','✗ Pas tout à fait — relisez la question et réessayez, ou ouvrez la page Phrase accrocheuse.'),
   badHint:X('✗ Not quite. Hint:','✗ 不太對。提示：','✗ Pas tout à fait. Indice :'),
   resultOf:X('Student','學生','Élève')
 };
@@ -273,7 +273,7 @@ TRICKS['1A-2.2-1']={
 TRICKS['1A-2.3-1']={
   name:X('Multiplying signed numbers: the walking model','負負得正（走路模型）','Multiplier des nombres relatifs : le modèle de la marche'),
   zh0:'負負得正（走路模型）',
-  tip:X('Negative × negative = positive','負負得正','Moins fois moins = plus'),
+  tip:X('Two negatives make a positive','負負得正','Moins fois moins = plus'),
   picElab:X(`Facing the future (right) is <span class="r">red</span>, facing the past (left) is <span class="b">blue</span>. Walking forward is <span class="r">red</span>, walking backward is <span class="b">blue</span>.`,`面向未來（右）用<span class="r">紅色</span>，面向過去（左）用<span class="b">藍色</span>；向前走用<span class="r">紅色</span>，倒退走用<span class="b">藍色</span>。`,`Face à l’avenir (droite) : <span class="r">rouge</span> ; face au passé (gauche) : <span class="b">bleu</span>. Marcher en avant : <span class="r">rouge</span> ; à reculons : <span class="b">bleu</span>.`),
   tipLong:X('<b>a × b</b> is a walk. <b>1st number</b> = number of steps (negative: <span class="b">turn around</span>). <b>2nd number</b> = length of each step (negative: <span class="b">walk backwards</span>).',
         '<b>a × b</b> 就是走路。<b>第 1 個數</b> = 走幾步（負號：<span class="b">向後轉</span>）。<b>第 2 個數</b> = 每步走多遠（負數：<span class="b">倒退走</span>）。',
