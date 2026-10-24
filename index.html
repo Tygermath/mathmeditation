@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Meditation</title>
+<style>
+:root{
+  --bg:#f6f7fb; --card:#fff; --ink:#1d2433; --muted:#667085; --line:#e3e6ee;
+  --accent:#2f6fed; --ok:#1f9d57; --ok-bg:#e7f7ee; --bad:#d64545; --bad-bg:#fdecec; --gold:#e8a317;
+  --red:#d9534f; --blue:#1f6fb4; --green:#2a9d57;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#12151c;--card:#1b1f29;--ink:#e8ebf2;--muted:#9aa3b5;--line:#2c3240;--accent:#6c9bff;--ok-bg:#12301f;--bad-bg:#3a1c1c}
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:16px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}
+.app{display:grid;grid-template-columns:320px 1fr;height:100vh}
+aside{background:var(--card);border-right:1px solid var(--line);overflow:auto;padding:16px 12px}
+aside h1{font-size:22px;margin:0 8px 12px}
+aside .sub{color:var(--muted);font-size:13px;margin:0 8px 10px}
+.lang{margin:0 8px 14px;display:flex;gap:6px}
+.lang button{flex:1;font:inherit;font-size:13px;font-weight:600;padding:5px 0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;cursor:pointer}
+.lang button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+details{margin:2px 0}
+summary{cursor:pointer;padding:6px 8px;border-radius:8px;list-style:none;display:flex;align-items:center;gap:6px;user-select:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸";font-size:12px;color:var(--muted);transition:transform .15s}
+details[open]>summary::before{transform:rotate(90deg)}
+summary:hover{background:var(--bg)}
+.vol>summary{font-weight:700}
+.chap>summary{font-weight:650}
+.sec>summary{font-weight:600;color:var(--muted)}
+.children{margin-left:14px;border-left:1px solid var(--line);padding-left:6px}
+.trick{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:none;color:inherit;font:inherit;padding:6px 8px;border-radius:8px;cursor:pointer}
+.trick:hover{background:var(--bg)}
+.trick.active{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:600}
+.trick .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--bg);border:1px solid var(--line);font-size:12px;display:grid;place-items:center}
+.trick.done .n{background:var(--gold);border-color:var(--gold);color:#fff}
+.trick .zh{color:var(--muted);font-size:13px}
+main{overflow:auto;padding:24px 32px 60px}
+.crumb{color:var(--muted);font-size:13px;margin-bottom:6px}
+h2{margin:0 0 2px;font-size:26px}
+h2 .zh{font-weight:500;color:var(--muted);font-size:18px;display:block;margin-top:2px}
+.tabs{display:flex;gap:6px;margin:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{border:0;background:none;color:var(--muted);font:inherit;font-weight:600;padding:10px 16px;border-bottom:3px solid transparent;cursor:pointer}
+.tabs button.on{color:var(--accent);border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;max-width:860px}
+.card.wide{max-width:1100px}
+.card + .card{margin-top:14px}
+.explain h3{margin:18px 0 6px;font-size:17px}
+.explain h3:first-child{margin-top:0}
+.explain .tip{background:color-mix(in srgb,var(--accent) 10%,transparent);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:0 0 14px;font-size:19px;line-height:1.6}
+.explain img,.explain svg{max-width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:#fff;margin:8px 0}
+.explain .tip.small{font-size:15px;padding:6px 12px;margin-bottom:6px}
+.elab{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:2px 14px}
+.elab>summary{cursor:pointer;font-weight:600;color:var(--accent);padding:8px 0}
+.elab>summary::before{display:none}
+.explain .eg{background:var(--bg);border-radius:10px;padding:10px 14px;margin:8px 0}
+.soon{color:var(--muted);font-style:italic}
+.r{color:var(--red);font-weight:600}.b{color:var(--blue);font-weight:600}.g{color:var(--green);font-weight:600}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.15;margin:0 2px;font-size:.95em}
+.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 3px}
+.fr>span:last-child{padding:0 3px}
+.q{font-size:26px;margin:4px 0 16px;line-height:1.9}
+.q small{color:var(--muted);font-size:15px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input.ans{font:inherit;font-size:22px;padding:8px 12px;width:200px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+input.ans:focus{outline:none;border-color:var(--accent)}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:10px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{padding:6px 12px;font-weight:500;font-size:14px}
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.choice{display:flex;gap:10px;align-items:center;border:2px solid var(--line);padding:10px 14px;border-radius:10px;cursor:pointer;background:var(--card);font:inherit;color:inherit;text-align:left}
+.choice.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.fb{margin-top:14px;padding:12px 16px;border-radius:10px;font-weight:600;display:none}
+.fb.ok{display:block;background:var(--ok-bg);color:var(--ok);animation:pop .35s}
+.fb.bad{display:block;background:var(--bad-bg);color:var(--bad);animation:shake .35s}
+@keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.sol{display:none;margin-top:14px;border:1px dashed var(--line);border-radius:10px;padding:12px 16px}
+.sol.show{display:block}
+.sol .ans-line{font-size:20px;font-weight:700;margin-bottom:6px}
+.stats{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:14px;margin-top:4px}
+.stars{display:flex;gap:4px;font-size:22px}
+.stars span{opacity:.25}.stars span.on{opacity:1;color:var(--gold)}
+.mastered{display:inline-block;background:var(--gold);color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:700;margin-left:10px;vertical-align:middle}
+.uploads{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.up{width:120px;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:12px;background:var(--bg)}
+.up img{width:100%;height:90px;object-fit:cover;display:block}
+.up .pdf{height:90px;display:grid;place-items:center;font-weight:700;color:var(--muted)}
+.up div.cap{padding:4px 6px;display:flex;justify-content:space-between;gap:4px;align-items:center}
+.up button{border:0;background:none;color:var(--bad);cursor:pointer;font-size:14px}
+.exgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:10px}
+.excard{border:2px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
+.excard.ok{border-color:var(--ok);background:var(--ok-bg)}
+.excard.bad{border-color:var(--bad);background:var(--bad-bg)}
+.excard .q{font-size:22px;line-height:1.7;margin:0 0 8px}
+.excard input.ans{width:100%;font-size:20px}
+.excard .exfb{font-weight:600;margin-top:6px;min-height:1.4em}
+.excard.ok .exfb{color:var(--ok)}.excard.bad .exfb{color:var(--bad)}
+.excard .sol{margin-top:6px;font-size:15px}
+.exnav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.dot{font:inherit;font-size:14px;font-weight:600;min-width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.dot.cur{border-color:var(--accent);color:var(--accent)}
+.dot.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.qno{color:var(--muted);font-size:20px;margin-right:6px}
+.btn:disabled{opacity:.45;cursor:default}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{max-height:46vh;border-right:0;border-bottom:1px solid var(--line)}
+  main{padding:16px 16px 48px}
+  .q{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>Math Meditation</h1>
+    <div class="lang" id="lang"></div>
+    <div id="tree"></div>
+    <p class="sub" style="margin-top:18px"><button class="btn sm" id="resetAll"></button></p>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<script>
+/* ============================================================
+   Language support: English (default), 中文, Français
+   X(en, zh, fr) bundles one text in three languages; tx() picks the active one.
+   ============================================================ */
+const LANGS=[['en','English'],['zh','中文'],['fr','Français']];
+let LANG='en';
+try{const l=localStorage.getItem('mm_lang');if(l&&LANGS.some(x=>x[0]===l))LANG=l}catch(e){}
+const X=(en,zh,fr)=>({en,zh,fr});
+const tx=v=>v==null?'':typeof v==='string'?v:(v[LANG]||v.en);
+
+const UI={
+  subtitle:X('Grade 7 · skills to master','七年級 · 要熟練的技巧','Classe de 5e · compétences à maîtriser'),
+  reset:X('Reset all progress','清除所有進度','Réinitialiser la progression'),
+  resetConfirm:X('Reset all progress? (Uploaded files are kept.)','要清除所有進度嗎？（已上傳的檔案會保留。）','Réinitialiser toute la progression ? (Les fichiers envoyés sont conservés.)'),
+  vol:X('Vol','冊','Vol.'), chapter:X('Chapter','章','Chapitre'), section:X('Section','節','Section'), trick:X('Trick','口訣','Astuce'),
+  tabTrick:X('① Mnemonic','① 口訣','① Mnémonique'), tabPicture:X('② Visual','② 圖像','② Visuel'), tabExemplar:X('③ Exemplars','③ 啟蒙題/典範題','③ Problèmes modèles'), tabRandom:X('④ Random practice','④ 隨機練習題','④ Exercices aléatoires'),
+  exDone:X('Done','已完成','Terminé'), exNote:X('Compare the answers side by side','並排比較各題的答案','Comparez les réponses côte à côte'),
+  checkAll:X('Check all','全部檢查','Tout vérifier'), okShort:X('Correct','答對了','Correct'), badShort:X('Try again','再試一次','Réessayez'),
+  prev:X('Previous','上一題','Précédent'), next:X('Next','下一題','Suivant'), toRandom:X('Random practice','隨機練習題','Exercices aléatoires'), again:X('Do it again ↻','再做一次 ↻','Refaire ↻'),
+  mastered:X('★ Mastered','★ 已精熟','★ Maîtrisé'),
+  welcomeT:X('Welcome 👋','歡迎 👋','Bienvenue 👋'),
+  welcome1:X('Pick a <b>trick</b> from the menu. Each trick has a <b>Mnemonic</b>, a <b>Visual</b>, <b>Exemplar problems</b> and <b>Random practice</b>.','從左邊選單挑選一個<b>口訣</b>。每個口訣有「口訣」、「圖像」、「啟蒙題/典範題」和「隨機練習題」四個頁面。','Choisissez une <b>astuce</b> dans le menu. Chaque astuce a une page <b>Mnémonique</b>, une page <b>Visuel</b>, des <b>Problèmes modèles</b> et des <b>Exercices aléatoires</b>.'),
+  welcome2:X('Get <b>3 correct in a row</b> to earn a ★ for that trick.','連續<b>答對 3 題</b>就能得到該口訣的 ★。','Obtenez <b>3 bonnes réponses d’affilée</b> pour gagner une ★.'),
+  goPractice:X('Practice this trick →','練習這個口訣 →','S’entraîner →'),
+  elab:X('Elaboration','詳細說明','Développement'),
+  soon:X('Illustration coming soon.','圖像製作中。','Illustration à venir.'),
+  streak:X('Streak','連續答對','Série'), correct:X('Correct','答對','Correct'),
+  yourAnswer:X('Your answer','你的答案','Votre réponse'),
+  typeHint:X('Type an integer, a fraction like <code>-3/4</code>, or a decimal.','請輸入整數、分數（例如 <code>-3/4</code>）或小數。','Saisissez un entier, une fraction comme <code>-3/4</code> ou un décimal.'),
+  check:X('Check','檢查答案','Vérifier'), show:X('Show answer & explanation','查看答案與說明','Voir la réponse et l’explication'),
+  similar:X('Similar question ↻','換類似題 ↻','Question similaire ↻'),
+  answer:X('Answer','答案','Réponse'),
+  upload:X('Upload your working','上傳你的計算過程','Envoyer votre travail'),
+  uploadNote:X('(photo of your notebook or a PDF — stored only in this browser)','（筆記本照片或 PDF — 只儲存在這個瀏覽器）','(photo de votre cahier ou PDF — stocké uniquement dans ce navigateur)'),
+  noUploads:X('Nothing uploaded yet.','還沒有上傳任何檔案。','Rien d’envoyé pour l’instant.'),
+  del:X('Delete','刪除','Supprimer'),
+  pickFirst:X('Pick one of the choices first.','請先選一個選項。','Choisissez d’abord une réponse.'),
+  needNumber:X('Please type a number (for example 5, -3/4, or 0.25).','請輸入數字（例如 5、-3/4 或 0.25）。','Saisissez un nombre (par exemple 5, -3/4 ou 0,25).'),
+  okFirst:X('✓ Correct! Well done.','✓ 答對了！做得好。','✓ Correct ! Bravo.'),
+  okMaster:X('✓ Correct! ★ You mastered this trick!','✓ 答對了！★ 你已精熟這個口訣！','✓ Correct ! ★ Vous maîtrisez cette astuce !'),
+  okLater:X('✓ Correct — now try a similar question.','✓ 答對了 — 再試一題類似題吧。','✓ Correct — essayez maintenant une question similaire.'),
+  bad1:X('✗ Not quite — look at the question again and try once more, or open the Mnemonic page.','✗ 不太對 — 再看一次題目，再試一次，或看「口訣」頁。','✗ Pas tout à fait — relisez la question et réessayez, ou ouvrez la page Mnémonique.'),
+  badHint:X('✗ Not quite. Hint:','✗ 不太對。提示：','✗ Pas tout à fait. Indice :'),
+  resultOf:X('Student','學生','Élève')
+};
+const u=k=>tx(UI[k]);
+
+/* ============================================================
+   Helpers: random numbers, fractions, formatting
+   ============================================================ */
+const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const sgn=()=>Math.random()<.5?-1:1;
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a||1};
+const F=(n,d=1)=>{if(d<0){n=-n;d=-d}const g=gcd(n,d);return{n:n/g,d:d/g}};
+const fmul=(x,y)=>F(x.n*y.n,x.d*y.d);
+const fdiv=(x,y)=>F(x.n*y.d,x.d*y.n);
+const fneg=x=>F(-x.n,x.d);
+const finv=x=>F(x.d,x.n);
+const feq=(x,y)=>x.n===y.n&&x.d===y.d;
+const MINUS='−';
+const fh=(f,paren=false)=>{
+  const neg=f.n<0, a=Math.abs(f.n);
+  let body=f.d===1?`${a}`:`<span class="fr"><span>${a}</span><span>${f.d}</span></span>`;
+  if(neg) body=MINUS+body;
+  return paren&&neg?`(${body})`:body;
+};
+const ft=f=>f.d===1?`${f.n}`:`${f.n}/${f.d}`.replace('-',MINUS);
+const N=n=>n<0?MINUS+(-n):`${n}`;
+const P=n=>n<0?`(${MINUS}${-n})`:`${n}`;
+const PF=f=>fh(f,true);
+const frac=(n,d)=>fh(F(n,d));
+function parseAns(s){
+  s=s.replace(/[−–—]/g,'-').replace(/\s+/g,'').replace(/÷/g,'/').replace(/,/g,'.');
+  let m=s.match(/^(-?\d+)\/(-?\d+)$/);
+  if(m){const d=+m[2];return d?F(+m[1],d):null}
+  m=s.match(/^(-?)(\d*)\.?(\d*)$/);
+  if(m&&(m[2]||m[3])){const k=m[3].length,n=+((m[2]||'0')+m[3]);return F((m[1]?-1:1)*n,Math.pow(10,k))}
+  return null;
+}
+const IMG=n=>`<img src="assets/${n}" alt="">`;
+
+/* ---- small SVG illustrations (language-neutral) ---- */
+const SVG={
+  opposites:`<svg viewBox="0 0 560 150" width="560"><line x1="20" y1="90" x2="540" y2="90" stroke="#222" stroke-width="2"/>
+   ${[-5,-4,-3,-2,-1,0,1,2,3,4,5].map(v=>`<line x1="${280+v*46}" y1="84" x2="${280+v*46}" y2="96" stroke="#222"/><text x="${280+v*46}" y="115" font-size="14" text-anchor="middle">${v<0?MINUS+(-v):v}</text>`).join('')}
+   <path d="M280 80 Q 395 10 510 80" fill="none" stroke="#d9534f" stroke-width="3"/><path d="M280 80 Q 165 10 50 80" fill="none" stroke="#1f6fb4" stroke-width="3"/>
+   <circle cx="510" cy="90" r="7" fill="#d9534f"/><circle cx="50" cy="90" r="7" fill="#1f6fb4"/><circle cx="280" cy="90" r="7" fill="#e8a317"/>
+   <text x="280" y="145" font-size="15" text-anchor="middle" fill="#555">5 + (${MINUS}5) = 0</text></svg>`,
+  sharing:`<svg viewBox="0 0 560 120" width="560"><rect x="40" y="20" width="480" height="34" fill="#e57373"/><text x="280" y="43" font-size="16" text-anchor="middle">24</text>
+   ${[0,1,2,3].map(i=>`<rect x="${40+i*120}" y="76" width="120" height="34" fill="#7fb6e6" stroke="#fff" stroke-width="3"/><text x="${100+i*120}" y="99" font-size="16" text-anchor="middle">6</text>`).join('')}
+   <text x="280" y="68" font-size="22" text-anchor="middle" fill="#2a9d57">↓ ÷ 4</text></svg>`,
+  measureBig:`<svg viewBox="0 0 560 130" width="560"><rect x="40" y="16" width="480" height="34" fill="#e57373"/><text x="280" y="39" font-size="16" text-anchor="middle">3/4</text>
+   ${[0,1,2].map(i=>`<rect x="${40+i*160}" y="76" width="160" height="34" fill="#7fb6e6" stroke="#fff" stroke-width="3"/><text x="${120+i*160}" y="99" font-size="16" text-anchor="middle">1/4</text>`).join('')}
+   <text x="280" y="68" font-size="20" text-anchor="middle" fill="#2a9d57">↓ × 3</text><text x="280" y="126" font-size="15" text-anchor="middle" fill="#555">3/4 ÷ 1/4 = 3</text></svg>`,
+  measureSmall:`<svg viewBox="0 0 560 130" width="560"><rect x="40" y="16" width="480" height="34" fill="#e57373"/><text x="280" y="39" font-size="16" text-anchor="middle">3/4</text>
+   <rect x="40" y="76" width="160" height="34" fill="#7fb6e6"/><text x="120" y="99" font-size="16" text-anchor="middle">1/4</text><rect x="200" y="76" width="320" height="34" fill="none" stroke="#999" stroke-dasharray="5 4"/>
+   <text x="280" y="68" font-size="20" text-anchor="middle" fill="#2a9d57">↓ 1/3</text><text x="280" y="126" font-size="15" text-anchor="middle" fill="#555">1/4 ÷ 3/4 = 1/3</text></svg>`,
+  turns:`<svg viewBox="0 0 560 150" width="560">
+   ${[1,2,3,4].map(n=>{const odd=n%2===1,x=40+(n-1)*135;return `<text x="${x+50}" y="25" font-size="16" text-anchor="middle">(${MINUS}1)<tspan dy="-7" font-size="11">${n}</tspan></text>
+   <circle cx="${x+50}" cy="75" r="26" fill="${odd?'#1f6fb4':'#d9534f'}"/><path d="${odd?`M${x+30} 75 L${x-8} 83 L${x+30} 91 Z`:`M${x+70} 75 L${x+108} 83 L${x+70} 91 Z`}" fill="#e9a15f" stroke="#222"/>
+   <text x="${x+50}" y="135" font-size="16" text-anchor="middle" fill="#555">= ${odd?MINUS+'1':'1'}</text>`}).join('')}</svg>`
+};
+
+/* ============================================================
+   Trick definitions
+   name/tip/explain/pic are X(...) text bundles (pic can be a plain html string).
+   gen() returns {q, a, steps}  — q and steps may be X(...) bundles;
+   multiple choice: {q, choices:[...], a:index, steps}
+   ============================================================ */
+const TRICKS={};
+const sameBy=X('same signs → positive <br> different signs → negative','同號得正 <br> 異號得負','signes identiques → positif <br> signes différents → négatif');
+
+/* ---------- Section 2.2 ---------- */
+TRICKS['1A-2.2-1']={
+  name:X('Opposites: two numbers that add up to 0','相加為0的兩數為相反數','Opposés : deux nombres dont la somme est 0'),
+  zh0:'相加為0的兩數為相反數',
+  tip:X('If two numbers add up to <b>0</b>, they are <b>opposites</b>. To find the missing number, just flip the sign.',
+        '兩數相加為 <b>0</b>，它們就是<b>相反數</b>。找缺的數，只要把正負號變過來。',
+        'Si deux nombres ont pour somme <b>0</b>, ils sont <b>opposés</b>. Pour trouver le nombre manquant, changez simplement le signe.'),
+  explain:X(
+   `<p>On the number line, a number and its opposite are the same distance from 0, on opposite sides. Walk to <b>5</b>, then walk <b>5 back</b>: you are home at 0.</p>
+    <div class="eg">5 + (${MINUS}5) = 0 → the opposite of 5 is ${MINUS}5<br>(${MINUS}2.5) + 2.5 = 0<br>${fh(F(3,4))} + ${fh(F(-3,4))} = 0</div>
+    <p><b>? + 7 = 0</b> → ? is the opposite of 7, so <b>? = ${MINUS}7</b>. The opposite of 0 is 0.</p>`,
+   `<p>在數線上，一個數和它的相反數離 0 一樣遠，但在 0 的兩邊。走到 <b>5</b>，再<b>倒退 5 步</b>，就回到原點 0。</p>
+    <div class="eg">5 + (${MINUS}5) = 0 → 5 的相反數是 ${MINUS}5<br>(${MINUS}2.5) + 2.5 = 0<br>${fh(F(3,4))} + ${fh(F(-3,4))} = 0</div>
+    <p><b>? + 7 = 0</b> → ? 是 7 的相反數，所以 <b>? = ${MINUS}7</b>。0 的相反數是 0。</p>`,
+   `<p>Sur la droite numérique, un nombre et son opposé sont à la même distance de 0, de part et d’autre. Avancez jusqu’à <b>5</b>, puis <b>reculez de 5</b> : vous êtes de retour en 0.</p>
+    <div class="eg">5 + (${MINUS}5) = 0 → l’opposé de 5 est ${MINUS}5<br>(${MINUS}2,5) + 2,5 = 0<br>${fh(F(3,4))} + ${fh(F(-3,4))} = 0</div>
+    <p><b>? + 7 = 0</b> → ? est l’opposé de 7, donc <b>? = ${MINUS}7</b>. L’opposé de 0 est 0.</p>`),
+  pic:SVG.opposites,
+  gen(){
+    const m=ri(0,3);
+    if(m===0){const x=sgn()*ri(1,40);return{q:`${P(x)} + ? = 0`,a:F(-x),steps:X(`The missing number is the opposite of ${P(x)}, so <b>? = ${N(-x)}</b>.`,`缺的數是 ${P(x)} 的相反數，所以 <b>? = ${N(-x)}</b>。`,`Le nombre manquant est l’opposé de ${P(x)}, donc <b>? = ${N(-x)}</b>.`)}}
+    if(m===1){const x=sgn()*ri(1,40);return{q:`? + ${P(x)} = 0`,a:F(-x),steps:X(`? and ${P(x)} are opposites, so <b>? = ${N(-x)}</b>.`,`? 和 ${P(x)} 互為相反數，所以 <b>? = ${N(-x)}</b>。`,`? et ${P(x)} sont opposés, donc <b>? = ${N(-x)}</b>.`)}}
+    if(m===2){const d=ri(2,9),n=ri(1,d*2-1),s=sgn(),f=F(s*n,d);const st=X(`Flip the sign: <b>? = ${fh(fneg(f))}</b>.`,`把正負號變過來：<b>? = ${fh(fneg(f))}</b>。`,`Changez le signe : <b>? = ${fh(fneg(f))}</b>.`);return{q:`${PF(f)} + ? = 0`,a:fneg(f),steps:st}}
+    const x=sgn()*(ri(1,99)/10),t=x.toFixed(1).replace('-',MINUS),r=(-x).toFixed(1).replace('-',MINUS);
+    return{q:`${x<0?'('+t+')':t} + ? = 0`,a:parseAns((-x).toFixed(1)),steps:X(`Flip the sign: <b>? = ${r}</b>.`,`把正負號變過來：<b>? = ${r}</b>。`,`Changez le signe : <b>? = ${r}</b>.`)}
+  }
+};
+
+/* ---------- Section 2.3 ---------- */
+TRICKS['1A-2.3-1']={
+  name:X('Multiplying signed numbers: the walking model','負負得正（走路模型）','Multiplier des nombres relatifs : le modèle de la marche'),
+  zh0:'負負得正（走路模型）',
+  tip:X('Negative × negative = positive','負負得正','Moins fois moins = plus'),
+  picElab:X(`Facing the future (right) is <span class="r">red</span>, facing the past (left) is <span class="b">blue</span>. Walking forward is <span class="r">red</span>, walking backward is <span class="b">blue</span>.`,`面向未來（右）用<span class="r">紅色</span>，面向過去（左）用<span class="b">藍色</span>；向前走用<span class="r">紅色</span>，倒退走用<span class="b">藍色</span>。`,`Face à l’avenir (droite) : <span class="r">rouge</span> ; face au passé (gauche) : <span class="b">bleu</span>. Marcher en avant : <span class="r">rouge</span> ; à reculons : <span class="b">bleu</span>.`),
+  tipLong:X('<b>a × b</b> is a walk. <b>1st number</b> = number of steps (negative: <span class="b">turn around</span>). <b>2nd number</b> = length of each step (negative: <span class="b">walk backwards</span>).',
+        '<b>a × b</b> 就是走路。<b>第 1 個數</b> = 走幾步（負號：<span class="b">向後轉</span>）。<b>第 2 個數</b> = 每步走多遠（負數：<span class="b">倒退走</span>）。',
+        '<b>a × b</b>, c’est une marche. <b>1er nombre</b> = nombre de pas (négatif : <span class="b">demi-tour</span>). <b>2e nombre</b> = longueur de chaque pas (négatif : <span class="b">à reculons</span>).'),
+  explain:X(
+   `<p>Facing the future (right) is <span class="r">red</span>, facing the past (left) is <span class="b">blue</span>. Walking forward is <span class="r">red</span>, walking backward is <span class="b">blue</span>.</p>
+    <p><b>(${MINUS}2) × (${MINUS}3)</b>: the ${MINUS}2 turns you around to face the past; the ${MINUS}3 makes you walk <i>backwards</i>. Backwards while facing the past takes you toward the future: you end at <b>+6</b>.</p><div class="eg">${tx(sameBy)}</div>`,
+   `<p>面向未來（右）用<span class="r">紅色</span>，面向過去（左）用<span class="b">藍色</span>；向前走用<span class="r">紅色</span>，倒退走用<span class="b">藍色</span>。</p>
+    <p><b>(${MINUS}2) × (${MINUS}3)</b>：${MINUS}2 讓你轉身面向過去；${MINUS}3 讓你<i>倒退</i>走。面向過去倒退走，就朝未來前進：最後停在 <b>+6</b>。</p><div class="eg">同號得正 <br> 異號得負</div>`,
+   `<p>Face à l’avenir (droite) : <span class="r">rouge</span> ; face au passé (gauche) : <span class="b">bleu</span>. Marcher en avant : <span class="r">rouge</span> ; à reculons : <span class="b">bleu</span>.</p>
+    <p><b>(${MINUS}2) × (${MINUS}3)</b> : le ${MINUS}2 vous fait faire demi-tour (face au passé) ; le ${MINUS}3 vous fait marcher <i>à reculons</i>. À reculons face au passé, on va vers l’avenir : on arrive à <b>+6</b>.</p><div class="eg">signes identiques → positif <br> signes différents → négatif</div>`),
+  pic:IMG('walking-model.png'),
+  gen(){
+    const a=sgn()*ri(2,9),b=sgn()*ri(2,9);
+    return{q:`${P(a)} × ${P(b)} = ?`,a:F(a*b),steps:X(
+     `1st number ${N(a)}: ${Math.abs(a)} steps, ${a>0?'facing the future':'turn around (facing the past)'}.<br>2nd number ${N(b)}: each step is ${Math.abs(b)} long, walking <b>${b>0?'forward':'backward'}</b>.<br>${a*b>0?'You end on the future side → positive':'You end on the past side → negative'}: <b>${N(a*b)}</b>.`,
+     `第 1 個數 ${N(a)}：走 ${Math.abs(a)} 步，${a>0?'面向未來':'向後轉（面向過去）'}。<br>第 2 個數 ${N(b)}：每步 ${Math.abs(b)}，<b>${b>0?'向前':'倒退'}</b>走。<br>${a*b>0?'最後在未來那一側 → 正':'最後在過去那一側 → 負'}：<b>${N(a*b)}</b>。`,
+     `1er nombre ${N(a)} : ${Math.abs(a)} pas, ${a>0?'face à l’avenir':'demi-tour (face au passé)'}.<br>2e nombre ${N(b)} : chaque pas mesure ${Math.abs(b)}, marche <b>${b>0?'en avant':'à reculons'}</b>.<br>${a*b>0?'On finit du côté de l’avenir → positif':'On finit du côté du passé → négatif'} : <b>${N(a*b)}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-2']={
+  name:X('Division can be converted to multiplication','除法可換算為乘法','La division se transforme en multiplication'),
+  zh0:'除法可換算為乘法',
+  tip:X('Dividing by 2 = multiplying by the reciprocal of 2','除以2等於乘以2的倒數','Diviser par 2 = multiplier par l’inverse de 2'),
+  picElab:`÷ 2 = × ${frac(1,2)} <br> ÷ ${frac(1,2)} = × 2 <br>÷ ${frac(2,3)} = × ${frac(3,2)}`,
+  tipLong:X('<b>÷ n</b> means <b>× (1/n)</b>. Dividing by 2 = splitting into 2 parts = × ½. Dividing by ½ = measuring with ½ as the unit = × 2.',
+        '<b>÷ n</b> 就是 <b>× (1/n)</b>。除以 2 ＝ 平分成 2 段 ＝ 乘以 ½。除以 ½ ＝ 用 ½ 當單位來量 ＝ 乘以 2。',
+        '<b>÷ n</b> revient à <b>× (1/n)</b>. Diviser par 2 = partager en 2 = × ½. Diviser par ½ = mesurer avec ½ comme unité = × 2.'),
+  explain:X(
+   `<div class="eg">÷ 2 = × ${frac(1,2)} <br> ÷ ${frac(1,2)} = × 2 <br>÷ ${frac(2,3)} = × ${frac(3,2)}</div><p>To divide by a number, <b>multiply by its reciprocal</b> (flip it upside down).</p>`,
+   `<div class="eg">÷ 2 = × ${frac(1,2)} <br> ÷ ${frac(1,2)} = × 2 <br>÷ ${frac(2,3)} = × ${frac(3,2)}</div><p>除以一個數，就是<b>乘以它的倒數</b>（上下翻轉）。</p>`,
+   `<div class="eg">÷ 2 = × ${frac(1,2)} <br> ÷ ${frac(1,2)} = × 2 <br>÷ ${frac(2,3)} = × ${frac(3,2)}</div><p>Pour diviser par un nombre, on <b>multiplie par son inverse</b> (on le retourne).</p>`),
+  pic:IMG('div-by-2.png')+IMG('div-by-half.png'),
+  gen(){
+    const m=ri(0,2);let x,y;
+    if(m===0){x=F(ri(2,12));y=F(ri(1,5),ri(2,7))}else if(m===1){x=F(ri(1,12));y=F(ri(2,9))}else{x=F(ri(1,7),ri(2,8));y=F(ri(2,6))}
+    const r=fmul(x,finv(y));
+    return{q:`${fh(x)} ÷ ${fh(y)} = ?`,a:r,steps:X(
+      `÷ ${fh(y)} is the same as × ${fh(finv(y))}.<br>${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>.`,
+      `÷ ${fh(y)} 等於 × ${fh(finv(y))}。<br>${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>。`,
+      `÷ ${fh(y)} équivaut à × ${fh(finv(y))}.<br>${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-3']={
+  name:X('Multiplying by 0 wipes out any number','「乘以0」會消滅任何數','Multiplier par 0 efface n’importe quel nombre'),
+  zh0:'「乘以0」會消滅任何數',
+  tip:X('Anything × 0 is <b>0</b>. Zero copies of anything is nothing.','任何數 × 0 都是 <b>0</b>。拿 0 份，就什麼也沒有。','Tout nombre × 0 vaut <b>0</b>. Zéro exemplaire de n’importe quoi, ça ne fait rien.'),
+  explain:X(
+   `<p>3 × 0 means “take 0 groups of 3” = nothing. It doesn’t matter how big or ugly the other number is.</p><div class="eg">${MINUS}37 × 0 = 0 <br> 0 × ${frac(5,8)} = 0 <br> (12 × 13 + 7) × 0 = 0</div><p>Spot the 0 first and skip all other work.</p>`,
+   `<p>3 × 0 的意思是「拿 0 組 3」＝ 什麼都沒有。另一個數再大、再醜都沒關係。</p><div class="eg">${MINUS}37 × 0 = 0 <br> 0 × ${frac(5,8)} = 0 <br> (12 × 13 + 7) × 0 = 0</div><p>先找出 0，其他計算都可以省下。</p>`,
+   `<p>3 × 0 signifie « prendre 0 groupe de 3 » = rien. Peu importe que l’autre nombre soit grand ou compliqué.</p><div class="eg">${MINUS}37 × 0 = 0 <br> 0 × ${frac(5,8)} = 0 <br> (12 × 13 + 7) × 0 = 0</div><p>Repérez d’abord le 0 et évitez tout le calcul.</p>`),
+  pic:null,
+  gen(){
+    const m=ri(0,2);
+    const st=X('Anything × 0 is <b>0</b>.','任何數 × 0 都是 <b>0</b>。','Tout nombre × 0 vaut <b>0</b>.');
+    if(m===0){const x=sgn()*ri(2,99);return{q:`${P(x)} × 0 = ?`,a:F(0),steps:st}}
+    if(m===1){const f=F(sgn()*ri(1,9),ri(2,9));return{q:`0 × ${PF(f)} = ?`,a:F(0),steps:st}}
+    const a=ri(3,15),b=ri(3,15),c=ri(2,20);
+    return{q:`(${a} × ${b} + ${c}) × 0 = ?`,a:F(0),steps:X('No need to compute inside the parentheses: anything × 0 is <b>0</b>.','括號裡不用算：任何數 × 0 都是 <b>0</b>。','Inutile de calculer entre parenthèses : tout nombre × 0 vaut <b>0</b>.')}
+  }
+};
+
+TRICKS['1A-2.3-4']={
+  name:X('Multiplying by 1 changes nothing','「乘以1」不會改變任何數','Multiplier par 1 ne change rien'),
+  zh0:'「乘以1」不會改變任何數',
+  tip:X('Anything × 1 stays the same. (× 1 is “1 copy of it”.)','任何數 × 1 都不變。（× 1 就是「拿 1 份」。）','Tout nombre × 1 reste identique. (× 1, c’est « un exemplaire ».)'),
+  explain:X(
+   `<p>5 × 1 means “1 group of 5” = 5. Multiplying by 1 changes how a number <i>looks</i>, not its value.</p><div class="eg">${MINUS}14 × 1 = ${MINUS}14 <br> 1 × ${fh(F(-3,5))} = ${fh(F(-3,5))}</div>`,
+   `<p>5 × 1 的意思是「1 組 5」＝ 5。乘以 1 只改變數字的<i>樣子</i>，不改變它的值。</p><div class="eg">${MINUS}14 × 1 = ${MINUS}14 <br> 1 × ${fh(F(-3,5))} = ${fh(F(-3,5))}</div>`,
+   `<p>5 × 1 signifie « 1 groupe de 5 » = 5. Multiplier par 1 change l’<i>apparence</i> d’un nombre, pas sa valeur.</p><div class="eg">${MINUS}14 × 1 = ${MINUS}14 <br> 1 × ${fh(F(-3,5))} = ${fh(F(-3,5))}</div>`),
+  pic:null,
+  gen(){
+    const m=ri(0,2);
+    if(m===0){const x=sgn()*ri(2,99);return{q:`${P(x)} × 1 = ?`,a:F(x),steps:X(`× 1 changes nothing: <b>${N(x)}</b>.`,`× 1 不會改變：<b>${N(x)}</b>。`,`× 1 ne change rien : <b>${N(x)}</b>.`)}}
+    if(m===1){const f=F(sgn()*ri(1,9),ri(2,9));return{q:`1 × ${PF(f)} = ?`,a:f,steps:X(`1 × anything is that number: <b>${fh(f)}</b>.`,`1 乘任何數都得到那個數：<b>${fh(f)}</b>。`,`1 × un nombre donne ce nombre : <b>${fh(f)}</b>.`)}}
+    const a=ri(10,30),b=ri(2,9),c=ri(2,9),v=a-b*c;
+    return{q:`(${a} ${MINUS} ${b} × ${c}) × 1 = ?`,a:F(v),steps:X(`Inside: ${b} × ${c} = ${b*c}, then ${a} ${MINUS} ${b*c} = ${N(v)}. × 1 changes nothing: <b>${N(v)}</b>.`,`括號內：${b} × ${c} = ${b*c}，再 ${a} ${MINUS} ${b*c} = ${N(v)}。× 1 不會改變：<b>${N(v)}</b>。`,`Dans la parenthèse : ${b} × ${c} = ${b*c}, puis ${a} ${MINUS} ${b*c} = ${N(v)}. × 1 ne change rien : <b>${N(v)}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-5']={
+  name:X('Sharing division: gold shared equally among pirates','黃金平分給海盜（平分除法）','Division-partage : l’or partagé entre pirates'),
+  zh0:'黃金平分給海盜（平分除法）',
+  tip:X('<b>a ÷ n</b>: share <b>a</b> equally among <b>n</b> people — how much does each get? Signs work like multiplication.','<b>a ÷ n</b>：把 <b>a</b> 平分給 <b>n</b> 個人，每人分到多少？正負號的規則和乘法一樣。','<b>a ÷ n</b> : partager <b>a</b> équitablement entre <b>n</b> personnes — combien chacun reçoit-il ? Les signes suivent la règle de la multiplication.'),
+  explain:X(
+   `<p>24 bars of gold shared equally among 4 pirates: each gets 24 ÷ 4 = <b>6</b>. A <b>debt</b> of 24 (${MINUS}24) shared among 4 pirates is ${MINUS}6 each.</p><div class="eg">${MINUS}24 ÷ 4 = ${MINUS}6 <br> 24 ÷ (${MINUS}4) = ${MINUS}6 <br> ${MINUS}24 ÷ (${MINUS}4) = 6</div><p>If it doesn’t share out evenly the answer is a fraction: 3 ÷ 4 = ${frac(3,4)}.</p>`,
+   `<p>24 條金條平分給 4 個海盜，每人分到 24 ÷ 4 = <b>6</b>。24 的<b>債務</b>（${MINUS}24）平分給 4 個海盜，每人是 ${MINUS}6。</p><div class="eg">${MINUS}24 ÷ 4 = ${MINUS}6 <br> 24 ÷ (${MINUS}4) = ${MINUS}6 <br> ${MINUS}24 ÷ (${MINUS}4) = 6</div><p>分不盡時，答案是分數：3 ÷ 4 = ${frac(3,4)}。</p>`,
+   `<p>24 lingots d’or partagés entre 4 pirates : chacun reçoit 24 ÷ 4 = <b>6</b>. Une <b>dette</b> de 24 (${MINUS}24) partagée entre 4 pirates fait ${MINUS}6 chacun.</p><div class="eg">${MINUS}24 ÷ 4 = ${MINUS}6 <br> 24 ÷ (${MINUS}4) = ${MINUS}6 <br> ${MINUS}24 ÷ (${MINUS}4) = 6</div><p>Si le partage n’est pas exact, la réponse est une fraction : 3 ÷ 4 = ${frac(3,4)}.</p>`),
+  pic:SVG.sharing,
+  gen(){
+    const m=ri(0,2);
+    if(m===0){const n=ri(2,9),k=ri(2,12);return{q:X(`${n*k} bars of gold shared equally among ${n} pirates. Each pirate gets ? bars.`,`${n*k} 條金條平分給 ${n} 個海盜，每個海盜分到 ? 條。`,`${n*k} lingots d’or partagés équitablement entre ${n} pirates. Chaque pirate reçoit ? lingots.`),a:F(k),steps:`${n*k} ÷ ${n} = <b>${k}</b>.`}}
+    if(m===1){const n=sgn()*ri(2,9),k=sgn()*ri(2,12);return{q:`${P(n*k)} ÷ ${P(n)} = ?`,a:F(k),steps:X(`Same signs → positive, different signs → negative. ${Math.abs(n*k)} ÷ ${Math.abs(n)} = ${Math.abs(k)}, so <b>${N(k)}</b>.`,`同號得正、異號得負。${Math.abs(n*k)} ÷ ${Math.abs(n)} = ${Math.abs(k)}，所以 <b>${N(k)}</b>。`,`Signes identiques → positif, différents → négatif. ${Math.abs(n*k)} ÷ ${Math.abs(n)} = ${Math.abs(k)}, donc <b>${N(k)}</b>.`)}}
+    const d=ri(2,9),n=ri(1,d*2-1),s=sgn(),r=F(s*n,d);
+    return{q:`${P(s*n)} ÷ ${d} = ?`,a:r,steps:X(`Share ${N(s*n)} into ${d} equal parts: <b>${fh(r)}</b>.`,`把 ${N(s*n)} 平分成 ${d} 份：<b>${fh(r)}</b>。`,`Partagez ${N(s*n)} en ${d} parts égales : <b>${fh(r)}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-6']={
+  name:X('Measurement division: measure the big with the small','用腳長量身高（用小的量大的）','Division-mesure : mesurer le grand avec le petit'),
+  zh0:'用腳長量身高（用小的量大的）',
+  tip:X('<b>big ÷ small</b> = how many small pieces fit in the big one. The answer is <b>bigger than 1</b>.','<b>大 ÷ 小</b> ＝ 大的裡面裝得下幾個小的。答案<b>大於 1</b>。','<b>grand ÷ petit</b> = combien de petits morceaux tiennent dans le grand. Le résultat est <b>supérieur à 1</b>.'),
+  explain:X(
+   `<p>A person is 6 feet tall: how many feet long? Use the foot as the unit: <b>height ÷ foot length</b>.</p><div class="eg">${frac(3,4)} ÷ ${frac(1,4)}: how many ${frac(1,4)}’s fit into ${frac(3,4)}? → <b>3</b></div><p>Always measure the <b>big</b> thing with the <b>small</b> thing.</p>`,
+   `<p>一個人身高 6 腳長：用腳長當單位量身高，也就是 <b>身高 ÷ 腳長</b>。</p><div class="eg">${frac(3,4)} ÷ ${frac(1,4)}：${frac(3,4)} 裡面裝得下幾個 ${frac(1,4)}？ → <b>3</b></div><p>永遠用<b>小的</b>去量<b>大的</b>。</p>`,
+   `<p>Une personne mesure 6 pieds : combien de pieds ? On prend le pied comme unité : <b>taille ÷ longueur du pied</b>.</p><div class="eg">${frac(3,4)} ÷ ${frac(1,4)} : combien de ${frac(1,4)} tiennent dans ${frac(3,4)} ? → <b>3</b></div><p>On mesure toujours le <b>grand</b> avec le <b>petit</b>.</p>`),
+  pic:SVG.measureBig,
+  gen(){
+    const d=ri(2,8),n=ri(1,d-1)||1,uu=F(n,d),k=ri(2,9),big=fmul(uu,F(k));
+    return{q:X(`${fh(big)} ÷ ${fh(uu)} = ?  <small>(how many ${fh(uu)}’s fit into ${fh(big)}?)</small>`,`${fh(big)} ÷ ${fh(uu)} = ?  <small>（${fh(big)} 裡面裝得下幾個 ${fh(uu)}？）</small>`,`${fh(big)} ÷ ${fh(uu)} = ?  <small>(combien de ${fh(uu)} tiennent dans ${fh(big)} ?)</small>`),a:F(k),
+      steps:X(`${fh(uu)} × ${k} = ${fh(big)}, so ${k} copies fit: <b>${k}</b>. (Or ${fh(big)} × ${fh(finv(uu))} = ${k}.)`,`${fh(uu)} × ${k} = ${fh(big)}，所以裝得下 ${k} 個：<b>${k}</b>。（或 ${fh(big)} × ${fh(finv(uu))} = ${k}。）`,`${fh(uu)} × ${k} = ${fh(big)}, donc ${k} morceaux tiennent : <b>${k}</b>. (Ou ${fh(big)} × ${fh(finv(uu))} = ${k}.)`)}
+  }
+};
+
+TRICKS['1A-2.3-7']={
+  name:X('Measurement division: measure the small with the big','用身高量腳長（用大的量小的）','Division-mesure : mesurer le petit avec le grand'),
+  zh0:'用身高量腳長（用大的量小的）',
+  tip:X('<b>small ÷ big</b> = what fraction of the big one the small one is. It is <b>less than 1</b> and is the <b>reciprocal</b> of big ÷ small.','<b>小 ÷ 大</b> ＝ 小的是大的的幾分之幾。答案<b>小於 1</b>，而且是 大 ÷ 小 的<b>倒數</b>。','<b>petit ÷ grand</b> = quelle fraction du grand représente le petit. Le résultat est <b>inférieur à 1</b> et c’est l’<b>inverse</b> de grand ÷ petit.'),
+  explain:X(
+   `<p>If height ÷ foot = 6, then foot ÷ height = ${frac(1,6)}: a foot is one sixth of the height.</p><div class="eg">${frac(3,4)} ÷ ${frac(1,4)} = 3 &nbsp;⟷&nbsp; ${frac(1,4)} ÷ ${frac(3,4)} = ${frac(1,3)}</div><p>The two measurements are <b>reciprocals</b> of each other.</p>`,
+   `<p>如果 身高 ÷ 腳長 = 6，那麼 腳長 ÷ 身高 = ${frac(1,6)}：腳長是身高的六分之一。</p><div class="eg">${frac(3,4)} ÷ ${frac(1,4)} = 3 &nbsp;⟷&nbsp; ${frac(1,4)} ÷ ${frac(3,4)} = ${frac(1,3)}</div><p>兩種測量值互為<b>倒數</b>。</p>`,
+   `<p>Si taille ÷ pied = 6, alors pied ÷ taille = ${frac(1,6)} : un pied est un sixième de la taille.</p><div class="eg">${frac(3,4)} ÷ ${frac(1,4)} = 3 &nbsp;⟷&nbsp; ${frac(1,4)} ÷ ${frac(3,4)} = ${frac(1,3)}</div><p>Les deux mesures sont <b>inverses</b> l’une de l’autre.</p>`),
+  pic:SVG.measureSmall,
+  gen(){
+    const d=ri(2,8),n=ri(1,d-1)||1,uu=F(n,d),k=ri(2,9),big=fmul(uu,F(k));
+    return{q:`${fh(uu)} ÷ ${fh(big)} = ?`,a:F(1,k),steps:X(`Big ÷ small would be ${fh(big)} ÷ ${fh(uu)} = ${k}. Flip it: small ÷ big = <b>${fh(F(1,k))}</b>.`,`大 ÷ 小 是 ${fh(big)} ÷ ${fh(uu)} = ${k}。取倒數：小 ÷ 大 = <b>${fh(F(1,k))}</b>。`,`Grand ÷ petit ferait ${fh(big)} ÷ ${fh(uu)} = ${k}. On retourne : petit ÷ grand = <b>${fh(F(1,k))}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-8']={
+  name:X('First decide: enlarge or shrink? Always measure the large with the small','先判斷放大或縮小，總是用小的量大的','D’abord : agrandir ou réduire ? Toujours mesurer le grand avec le petit'),
+  zh0:'先判斷放大或縮小，總是用小的量大的',
+  tip:X('1) Will the answer be <b>bigger</b> or <b>smaller</b> than 1? 2) Compute big ÷ small, flip it if shrinking. (Like subtraction: decide the sign first, then big − small.)','1) 答案會<b>大於</b>還是<b>小於</b> 1？ 2) 用 大 ÷ 小 計算，縮小的話再翻轉。（像減法：先判斷正負，總是用大的減小的。）','1) La réponse sera-t-elle <b>plus grande</b> ou <b>plus petite</b> que 1 ? 2) Calculez grand ÷ petit, puis retournez si on réduit. (Comme pour la soustraction : on décide d’abord du signe.)'),
+  explain:X(
+   `<p><b>Step 1.</b> If the first number is bigger than the second, the answer is more than 1 (enlarge); if smaller, less than 1 (shrink).<br><b>Step 2.</b> Compute big ÷ small, then flip it if you are shrinking.</p><div class="eg">${frac(3,2)} ÷ ${frac(3,4)}: ${frac(3,2)} is bigger → enlarge → <b>2</b><br>${frac(3,4)} ÷ ${frac(3,2)}: ${frac(3,4)} is smaller → shrink → flip → <b>${frac(1,2)}</b></div>`,
+   `<p><b>第 1 步：</b>第一個數比第二個數大，答案大於 1（放大）；比較小，答案小於 1（縮小）。<br><b>第 2 步：</b>先算 大 ÷ 小，縮小的話再翻轉。</p><div class="eg">${frac(3,2)} ÷ ${frac(3,4)}：${frac(3,2)} 比較大 → 放大 → <b>2</b><br>${frac(3,4)} ÷ ${frac(3,2)}：${frac(3,4)} 比較小 → 縮小 → 翻轉 → <b>${frac(1,2)}</b></div>`,
+   `<p><b>Étape 1.</b> Si le premier nombre est plus grand que le second, le résultat dépasse 1 (agrandir) ; sinon il est inférieur à 1 (réduire).<br><b>Étape 2.</b> Calculez grand ÷ petit, puis retournez si on réduit.</p><div class="eg">${frac(3,2)} ÷ ${frac(3,4)} : ${frac(3,2)} est plus grand → agrandir → <b>2</b><br>${frac(3,4)} ÷ ${frac(3,2)} : ${frac(3,4)} est plus petit → réduire → on retourne → <b>${frac(1,2)}</b></div>`),
+  pic:null,
+  gen(){
+    let x,y;do{x=F(ri(1,9),ri(2,8));y=F(ri(1,9),ri(2,8))}while(feq(x,y));
+    const r=fdiv(x,y),big=x.n*y.d>y.n*x.d;
+    return{q:`${fh(x)} ÷ ${fh(y)} = ?`,a:r,steps:X(`${fh(x)} is ${big?'bigger':'smaller'} than ${fh(y)}, so the answer is ${big?'more':'less'} than 1.<br>${fh(x)} ÷ ${fh(y)} = ${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>.`,`${fh(x)} 比 ${fh(y)} ${big?'大':'小'}，所以答案${big?'大於':'小於'} 1。<br>${fh(x)} ÷ ${fh(y)} = ${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>。`,`${fh(x)} est ${big?'plus grand':'plus petit'} que ${fh(y)}, donc la réponse est ${big?'supérieure':'inférieure'} à 1.<br>${fh(x)} ÷ ${fh(y)} = ${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-9']={
+  name:X('Dividing by 0 produces nothing','「除以0」生不出任何東西','Diviser par 0 ne produit rien'),
+  zh0:'「除以0」生不出任何東西',
+  tip:X('<b>n ÷ 0</b> is <b>undefined</b>. But <b>0 ÷ n = 0</b>.','<b>n ÷ 0</b> 是<b>沒有意義</b>的。但 <b>0 ÷ n = 0</b>。','<b>n ÷ 0</b> est <b>non défini</b>. Mais <b>0 ÷ n = 0</b>.'),
+  explain:X(
+   `<p>6 ÷ 0 = ? means “what × 0 = 6?”. Anything × 0 is 0, never 6. There is no answer: it is <b>undefined</b>.</p><div class="eg">6 ÷ 0 → undefined <br> 0 ÷ 6 = 0 (nothing shared among 6 people is nothing each)</div>`,
+   `<p>6 ÷ 0 = ? 的意思是「什麼數 × 0 = 6？」。任何數 × 0 都是 0，不可能是 6。沒有答案，我們說它<b>沒有意義</b>。</p><div class="eg">6 ÷ 0 → 沒有意義 <br> 0 ÷ 6 = 0（沒有東西分給 6 個人，每人還是沒有）</div>`,
+   `<p>6 ÷ 0 = ? signifie « quel nombre × 0 = 6 ? ». Tout nombre × 0 vaut 0, jamais 6. Il n’y a pas de réponse : c’est <b>non défini</b>.</p><div class="eg">6 ÷ 0 → non défini <br> 0 ÷ 6 = 0 (rien partagé entre 6 personnes, rien chacun)</div>`),
+  pic:null,
+  gen(){
+    const m=ri(0,2),n=sgn()*ri(1,30),und=X('undefined','沒有意義','non défini');
+    const ch=[und,'0',N(n),'1'];
+    const C=a=>a.map(c=>tx(c));
+    if(m===0)return{q:`${P(n)} ÷ 0 = ?`,choices:ch,a:0,steps:X('Dividing by 0 produces nothing: <b>undefined</b>.','除以 0 生不出任何東西：<b>沒有意義</b>。','Diviser par 0 ne produit rien : <b>non défini</b>.')};
+    if(m===1)return{q:`0 ÷ ${P(n)} = ?`,choices:ch,a:1,steps:X(`Nothing shared among ${Math.abs(n)} people: <b>0</b> each.`,`沒有東西分給 ${Math.abs(n)} 個人：每人 <b>0</b>。`,`Rien à partager entre ${Math.abs(n)} personnes : <b>0</b> chacun.`)};
+    return{q:X('Which one is <b>undefined</b>?','哪一個<b>沒有意義</b>？','Laquelle est <b>non définie</b> ?'),choices:[`${P(n)} × 0`,`0 ÷ ${P(n)}`,`${P(n)} ÷ 0`,`${P(n)} ÷ 1`],a:2,steps:X(`${P(n)} × 0 = 0, 0 ÷ ${P(n)} = 0, ${P(n)} ÷ 1 = ${N(n)}. Only <b>${P(n)} ÷ 0</b> is undefined.`,`${P(n)} × 0 = 0，0 ÷ ${P(n)} = 0，${P(n)} ÷ 1 = ${N(n)}。只有 <b>${P(n)} ÷ 0</b> 沒有意義。`,`${P(n)} × 0 = 0, 0 ÷ ${P(n)} = 0, ${P(n)} ÷ 1 = ${N(n)}. Seule <b>${P(n)} ÷ 0</b> est non définie.`)};
+  }
+};
+
+TRICKS['1A-2.3-10']={
+  name:X('Equivalent operations','等效運算','Opérations équivalentes'),
+  zh0:'等效運算',
+  tip:X('<b>÷ n</b> and <b>× (1/n)</b> do the same job. <b>÷ (1/n)</b> and <b>× n</b> do the same job.','<b>÷ n</b> 和 <b>× (1/n)</b> 效果相同；<b>÷ (1/n)</b> 和 <b>× n</b> 效果相同。','<b>÷ n</b> et <b>× (1/n)</b> font le même travail ; <b>÷ (1/n)</b> et <b>× n</b> aussi.'),
+  explain:X(
+   `<div class="eg">“÷ 2” = “× ${frac(1,2)}” <br> “÷ ${frac(1,2)}” = “× 2”<br>“÷ ${frac(2,3)}” = “× ${frac(3,2)}” <br> “× ${frac(1,4)}” = “÷ 4”</div><p>Change the operation (× ↔ ÷) and flip the number into its reciprocal.</p>`,
+   `<div class="eg">「÷ 2」＝「× ${frac(1,2)}」 <br> 「÷ ${frac(1,2)}」＝「× 2」<br>「÷ ${frac(2,3)}」＝「× ${frac(3,2)}」 <br> 「× ${frac(1,4)}」＝「÷ 4」</div><p>把運算換掉（× ↔ ÷），同時把數字換成它的倒數。</p>`,
+   `<div class="eg">« ÷ 2 » = « × ${frac(1,2)} » <br> « ÷ ${frac(1,2)} » = « × 2 »<br>« ÷ ${frac(2,3)} » = « × ${frac(3,2)} » <br> « × ${frac(1,4)} » = « ÷ 4 »</div><p>Changez l’opération (× ↔ ÷) et remplacez le nombre par son inverse.</p>`),
+  pic:null,
+  gen(){
+    const d=ri(2,9),n=pick([1,1,1,ri(2,8)]),f=F(n,d);
+    if(Math.random()<.5)return{q:X(`“÷ ${fh(f)}” is the same as “× ?”`,`「÷ ${fh(f)}」等於「× ?」`,`« ÷ ${fh(f)} » équivaut à « × ? »`),a:finv(f),steps:X(`Dividing by ${fh(f)} = multiplying by its reciprocal <b>${fh(finv(f))}</b>.`,`除以 ${fh(f)} ＝ 乘以它的倒數 <b>${fh(finv(f))}</b>。`,`Diviser par ${fh(f)} = multiplier par son inverse <b>${fh(finv(f))}</b>.`)};
+    return{q:X(`“× ${fh(f)}” is the same as “÷ ?”`,`「× ${fh(f)}」等於「÷ ?」`,`« × ${fh(f)} » équivaut à « ÷ ? »`),a:finv(f),steps:X(`Multiplying by ${fh(f)} = dividing by its reciprocal <b>${fh(finv(f))}</b>.`,`乘以 ${fh(f)} ＝ 除以它的倒數 <b>${fh(finv(f))}</b>。`,`Multiplier par ${fh(f)} = diviser par son inverse <b>${fh(finv(f))}</b>.`)};
+  }
+};
+
+TRICKS['1A-2.3-11']={
+  name:X('(−1) to the n-th power: turn around n times','(−1)的n次方，迴轉n次','(−1) puissance n : n demi-tours'),
+  zh0:'(−1)的n次方，迴轉n次',
+  tip:X(`(${MINUS}1)<sup>n</sup>: every ${MINUS}1 is a <span class="b">turn around</span>. Even number of turns → <b>+1</b>. Odd → <b>${MINUS}1</b>.`,`(${MINUS}1)<sup>n</sup>：每一個 ${MINUS}1 就是一次<span class="b">向後轉</span>。轉偶數次 → <b>+1</b>；轉奇數次 → <b>${MINUS}1</b>。`,`(${MINUS}1)<sup>n</sup> : chaque ${MINUS}1 est un <span class="b">demi-tour</span>. Nombre pair de demi-tours → <b>+1</b>. Impair → <b>${MINUS}1</b>.`),
+  explain:X(
+   `<p>Start facing the future (+1). Each ${MINUS}1 multiplies by a turn-around.</p><div class="eg">(${MINUS}1)<sup>1</sup> = ${MINUS}1 <br> (${MINUS}1)<sup>2</sup> = 1 <br> (${MINUS}1)<sup>3</sup> = ${MINUS}1 <br> (${MINUS}1)<sup>10</sup> = 1</div><p>Only <b>odd or even</b> matters.</p>`,
+   `<p>一開始面向未來（+1）。每乘一個 ${MINUS}1，就轉身一次。</p><div class="eg">(${MINUS}1)<sup>1</sup> = ${MINUS}1 <br> (${MINUS}1)<sup>2</sup> = 1 <br> (${MINUS}1)<sup>3</sup> = ${MINUS}1 <br> (${MINUS}1)<sup>10</sup> = 1</div><p>只看次數是<b>奇數還是偶數</b>。</p>`,
+   `<p>On commence face à l’avenir (+1). Chaque ${MINUS}1 ajoute un demi-tour.</p><div class="eg">(${MINUS}1)<sup>1</sup> = ${MINUS}1 <br> (${MINUS}1)<sup>2</sup> = 1 <br> (${MINUS}1)<sup>3</sup> = ${MINUS}1 <br> (${MINUS}1)<sup>10</sup> = 1</div><p>Seule la <b>parité</b> compte.</p>`),
+  pic:SVG.turns,
+  gen(){
+    const n=ri(2,99),even=n%2===0,r=even?'1':MINUS+'1';
+    return{q:`(${MINUS}1)<sup>${n}</sup> = ?`,a:F(even?1:-1),steps:X(`Turn around ${n} times. ${n} is ${even?'even':'odd'}, so you face ${even?'the same way':'the opposite way'}: <b>${r}</b>.`,`轉身 ${n} 次。${n} 是${even?'偶':'奇'}數，所以${even?'面向原來的方向':'面向相反的方向'}：<b>${r}</b>。`,`${n} demi-tours. ${n} est ${even?'pair':'impair'}, on regarde ${even?'dans le même sens':'dans le sens opposé'} : <b>${r}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-12']={
+  name:X('Stepping back = turning around and stepping forward','後退2步＝向後轉前進2步','Reculer = faire demi-tour et avancer'),
+  zh0:'後退2步＝向後轉前進2步',
+  tip:X(`<b>Stepping back 2 steps = turning around and stepping forward 2 steps.</b> So each factor (${MINUS}a) is a turn-around. In (${MINUS}a)<sup>n</sup>: even n → positive, odd n → negative, and the size is a<sup>n</sup>.`,
+        `<b>後退 2 步 ＝ 向後轉再前進 2 步。</b>所以每個因數 (${MINUS}a) 就是一次向後轉。(${MINUS}a)<sup>n</sup>：n 為偶數 → 正，奇數 → 負，大小是 a<sup>n</sup>。`,
+        `<b>Reculer de 2 pas = faire demi-tour puis avancer de 2 pas.</b> Chaque facteur (${MINUS}a) est donc un demi-tour. Dans (${MINUS}a)<sup>n</sup> : n pair → positif, n impair → négatif, et la taille est a<sup>n</sup>.`),
+  explain:X(
+   `<div class="eg">(${MINUS}2)<sup>2</sup> = (${MINUS}2) × (${MINUS}2) = 4 (two turns: back facing forward)<br>(${MINUS}2)<sup>3</sup> = ${MINUS}8 (three turns)<br>(${frac(1,2)})<sup>2</sup> = ${frac(1,4)} <br> (${frac(1,2)})<sup>3</sup> = ${frac(1,8)}</div><p>A positive base never turns around, so the answer stays positive. Fractions: multiply the tops and the bottoms.</p>`,
+   `<div class="eg">(${MINUS}2)<sup>2</sup> = (${MINUS}2) × (${MINUS}2) = 4（轉兩次：回到面向前方）<br>(${MINUS}2)<sup>3</sup> = ${MINUS}8（轉三次）<br>(${frac(1,2)})<sup>2</sup> = ${frac(1,4)} <br> (${frac(1,2)})<sup>3</sup> = ${frac(1,8)}</div><p>底數是正數就不會轉身，答案一直是正的。分數：分子乘分子，分母乘分母。</p>`,
+   `<div class="eg">(${MINUS}2)<sup>2</sup> = (${MINUS}2) × (${MINUS}2) = 4 (deux demi-tours : on regarde de nouveau devant)<br>(${MINUS}2)<sup>3</sup> = ${MINUS}8 (trois demi-tours)<br>(${frac(1,2)})<sup>2</sup> = ${frac(1,4)} <br> (${frac(1,2)})<sup>3</sup> = ${frac(1,8)}</div><p>Une base positive ne fait jamais demi-tour : le résultat reste positif. Fractions : numérateur × numérateur, dénominateur × dénominateur.</p>`),
+  pic:null,
+  gen(){
+    if(Math.random()<.5){const a=ri(2,6),n=ri(2,4);return B.pow(F(-a),n)}
+    const d=ri(2,5),n=ri(2,4);return B.pow(F(1,d),n)
+  }
+};
+
+TRICKS['1A-2.3-13']={
+  name:X('Order of operations: PODMAS','運算順序 PODMAS','Ordre des opérations : PODMAS'),
+  zh0:'運算順序 PODMAS',
+  tip:X('<b>P</b>arentheses → <b>O</b>rders (powers) → <b>D</b>ivision / <b>M</b>ultiplication (left to right) → <b>A</b>ddition / <b>S</b>ubtraction (left to right).','<b>P</b> 括號 → <b>O</b> 次方 → <b>D</b> 除 / <b>M</b> 乘（由左到右）→ <b>A</b> 加 / <b>S</b> 減（由左到右）。','<b>P</b>arenthèses → <b>O</b>rdres (puissances) → <b>D</b>ivision / <b>M</b>ultiplication (de gauche à droite) → <b>A</b>ddition / <b>S</b>oustraction (de gauche à droite).'),
+  explain:X(
+   `<div class="eg">3 + 4 × 5 = 3 + 20 = 23 (not 35)<br>(3 + 4) × 5 = 7 × 5 = 35<br>20 ${MINUS} 3<sup>2</sup> = 20 ${MINUS} 9 = 11</div>`,
+   `<div class="eg">3 + 4 × 5 = 3 + 20 = 23（不是 35）<br>(3 + 4) × 5 = 7 × 5 = 35<br>20 ${MINUS} 3<sup>2</sup> = 20 ${MINUS} 9 = 11</div>`,
+   `<div class="eg">3 + 4 × 5 = 3 + 20 = 23 (et non 35)<br>(3 + 4) × 5 = 7 × 5 = 35<br>20 ${MINUS} 3<sup>2</sup> = 20 ${MINUS} 9 = 11</div>`),
+  pic:null,
+  gen(){
+    const m=ri(0,4);
+    if(m===0){const a=ri(2,20),b=ri(2,9),c=ri(2,9);return{q:`${a} + ${b} × ${c} = ?`,a:F(a+b*c),steps:X(`× first: ${b} × ${c} = ${b*c}. Then ${a} + ${b*c} = <b>${a+b*c}</b>.`,`先乘：${b} × ${c} = ${b*c}。再 ${a} + ${b*c} = <b>${a+b*c}</b>。`,`D’abord × : ${b} × ${c} = ${b*c}. Puis ${a} + ${b*c} = <b>${a+b*c}</b>.`)}}
+    if(m===1){const a=ri(2,12),b=ri(2,12),c=ri(2,9);return{q:`(${a} + ${b}) × ${c} = ?`,a:F((a+b)*c),steps:X(`Brackets first: ${a} + ${b} = ${a+b}. Then ${a+b} × ${c} = <b>${(a+b)*c}</b>.`,`先算括號：${a} + ${b} = ${a+b}。再 ${a+b} × ${c} = <b>${(a+b)*c}</b>。`,`D’abord la parenthèse : ${a} + ${b} = ${a+b}. Puis ${a+b} × ${c} = <b>${(a+b)*c}</b>.`)}}
+    if(m===2){const a=ri(30,60),b=ri(2,9),c=ri(2,9),d=ri(2,15),v=a-b*c+d;return{q:`${a} ${MINUS} ${b} × ${c} + ${d} = ?`,a:F(v),steps:X(`× first: ${b} × ${c} = ${b*c}. Then left to right: ${a} ${MINUS} ${b*c} = ${a-b*c}, ${a-b*c} + ${d} = <b>${v}</b>.`,`先乘：${b} × ${c} = ${b*c}。再由左到右：${a} ${MINUS} ${b*c} = ${a-b*c}，${a-b*c} + ${d} = <b>${v}</b>。`,`D’abord × : ${b} × ${c} = ${b*c}. Puis de gauche à droite : ${a} ${MINUS} ${b*c} = ${a-b*c}, ${a-b*c} + ${d} = <b>${v}</b>.`)}}
+    if(m===3){const d=ri(2,6),k=ri(2,9),a=d*k,b=ri(2,9),c=ri(2,9),v=k+b*c;return{q:`${a} ÷ ${d} + ${b} × ${c} = ?`,a:F(v),steps:X(`${a} ÷ ${d} = ${k} and ${b} × ${c} = ${b*c} (÷ and × before +). Then ${k} + ${b*c} = <b>${v}</b>.`,`${a} ÷ ${d} = ${k}，${b} × ${c} = ${b*c}（先乘除、後加）。再 ${k} + ${b*c} = <b>${v}</b>。`,`${a} ÷ ${d} = ${k} et ${b} × ${c} = ${b*c} (÷ et × avant +). Puis ${k} + ${b*c} = <b>${v}</b>.`)}}
+    const a=ri(30,80),b=ri(2,9),c=ri(2,6),v=a-b*b+c;
+    return{q:`${a} ${MINUS} ${b}<sup>2</sup> + ${c} = ?`,a:F(v),steps:X(`Power first: ${b}² = ${b*b}. Then ${a} ${MINUS} ${b*b} = ${a-b*b}, ${a-b*b} + ${c} = <b>${v}</b>.`,`先算次方：${b}² = ${b*b}。再 ${a} ${MINUS} ${b*b} = ${a-b*b}，${a-b*b} + ${c} = <b>${v}</b>。`,`D’abord la puissance : ${b}² = ${b*b}. Puis ${a} ${MINUS} ${b*b} = ${a-b*b}, ${a-b*b} + ${c} = <b>${v}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-14']={
+  name:X('Trial and error (perfect squares)','嘗試錯誤（完全平方數）','Essais et erreurs (carrés parfaits)'),
+  zh0:'嘗試錯誤（完全平方數）',
+  tip:X('To find <b>n</b> when <b>n × n</b> is a perfect square, try the squares you know: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225 …','要找 <b>n × n</b> 等於完全平方數的 <b>n</b>，就試試你認得的平方數：1、4、9、16、25、36、49、64、81、100、121、144、169、196、225 …','Pour trouver <b>n</b> quand <b>n × n</b> est un carré parfait, essayez les carrés connus : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225 …'),
+  explain:X(
+   `<div class="eg">? × ? = 169 → try 12 (144, too small), 13 (169 ✓) → ? = 13</div><p>Guess, check, adjust: every guess tells you which way to move.</p>`,
+   `<div class="eg">? × ? = 169 → 試 12（144，太小），13（169 ✓）→ ? = 13</div><p>猜、檢查、調整：每次猜測都告訴你下一步往哪個方向。</p>`,
+   `<div class="eg">? × ? = 169 → essayez 12 (144, trop petit), 13 (169 ✓) → ? = 13</div><p>Devinez, vérifiez, ajustez : chaque essai indique dans quel sens aller.</p>`),
+  pic:null,
+  gen(){
+    if(Math.random()<.5)return B.sqrt(ri(2,25));
+    const n=ri(4,25);
+    return{q:X(`Find the positive number: ? × ? = ${n*n}`,`找出正數：? × ? = ${n*n}`,`Trouvez le nombre positif : ? × ? = ${n*n}`),a:F(n),steps:X(`${n-1}² = ${(n-1)*(n-1)} (too small), ${n}² = ${n*n} ✓. <b>? = ${n}</b>.`,`${n-1}² = ${(n-1)*(n-1)}（太小），${n}² = ${n*n} ✓。<b>? = ${n}</b>。`,`${n-1}² = ${(n-1)*(n-1)} (trop petit), ${n}² = ${n*n} ✓. <b>? = ${n}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-15']={
+  name:X('Hidden operation: decide enlarge or shrink, then find the ratio','先判斷放大或縮小，再計算倍率','Opération cachée : agrandir ou réduire, puis trouver le rapport'),
+  zh0:'先判斷放大或縮小，再計算倍率',
+  tip:X('To find the hidden “× ?”: <b>enlarge or shrink?</b> Then <b>ratio = new ÷ old</b> (big ÷ small if enlarging, small ÷ big if shrinking).','找隱藏的「× ?」：先判斷<b>放大或縮小</b>，倍率 ＝ <b>新的 ÷ 舊的</b>（放大是大 ÷ 小；縮小是小 ÷ 大）。','Pour trouver le « × ? » caché : <b>agrandir ou réduire ?</b> Puis <b>rapport = nouveau ÷ ancien</b>.'),
+  explain:X(
+   `<div class="eg">6 × ? = 15: 15 is bigger → enlarge → 15 ÷ 6 = ${frac(5,2)}<br>15 × ? = 6: 6 is smaller → shrink → 6 ÷ 15 = ${frac(2,5)}</div><p>The multiplier that takes <b>a</b> to <b>b</b> is <b>b ÷ a</b>.</p>`,
+   `<div class="eg">6 × ? = 15：15 比較大 → 放大 → 15 ÷ 6 = ${frac(5,2)}<br>15 × ? = 6：6 比較小 → 縮小 → 6 ÷ 15 = ${frac(2,5)}</div><p>把 <b>a</b> 變成 <b>b</b> 的倍率就是 <b>b ÷ a</b>。</p>`,
+   `<div class="eg">6 × ? = 15 : 15 est plus grand → agrandir → 15 ÷ 6 = ${frac(5,2)}<br>15 × ? = 6 : 6 est plus petit → réduire → 6 ÷ 15 = ${frac(2,5)}</div><p>Le facteur qui transforme <b>a</b> en <b>b</b> est <b>b ÷ a</b>.</p>`),
+  pic:null,
+  gen(){
+    let a,b;do{a=ri(2,20);b=ri(2,20)}while(a===b);const r=F(b,a);
+    return{q:`${a} × ? = ${b}`,a:r,steps:X(`${b} is ${b>a?'bigger':'smaller'} than ${a}: ${b>a?'enlarge':'shrink'}. Ratio = ${b} ÷ ${a} = <b>${fh(r)}</b>.`,`${b} 比 ${a} ${b>a?'大':'小'}：${b>a?'放大':'縮小'}。倍率 = ${b} ÷ ${a} = <b>${fh(r)}</b>。`,`${b} est ${b>a?'plus grand':'plus petit'} que ${a} : ${b>a?'agrandir':'réduire'}. Rapport = ${b} ÷ ${a} = <b>${fh(r)}</b>.`)};
+  }
+};
+
+TRICKS['1A-2.3-16']={
+  name:X('Treat division as multiplication: shrink then enlarge restores','把除法看成乘法：縮小後再放大即回復原狀','Voir la division comme une multiplication : réduire puis agrandir ramène au départ'),
+  zh0:'把除法看成乘法：縮小後再放大即回復原狀',
+  tip:X('<b>a ÷ b × b = a</b> and <b>a × b ÷ b = a</b>. Undo and redo cancel: skip the work.','<b>a ÷ b × b = a</b>，<b>a × b ÷ b = a</b>。縮小再放大（或放大再縮小）就回復原狀：不必計算。','<b>a ÷ b × b = a</b> et <b>a × b ÷ b = a</b>. Défaire et refaire s’annulent : inutile de calculer.'),
+  explain:X(
+   `<p>Dividing by 3 shrinks to a third; multiplying by 3 enlarges it back. Together: nothing changed.</p><div class="eg">7 ÷ 3 × 3 = 7 <br> 9 × 4 ÷ 4 = 9 <br> ${frac(5,6)} ÷ ${frac(2,3)} × ${frac(2,3)} = ${frac(5,6)}</div>`,
+   `<p>除以 3 縮成三分之一；乘以 3 又放大回來。合起來：什麼都沒變。</p><div class="eg">7 ÷ 3 × 3 = 7 <br> 9 × 4 ÷ 4 = 9 <br> ${frac(5,6)} ÷ ${frac(2,3)} × ${frac(2,3)} = ${frac(5,6)}</div>`,
+   `<p>Diviser par 3 réduit au tiers ; multiplier par 3 agrandit de nouveau. Ensemble : rien n’a changé.</p><div class="eg">7 ÷ 3 × 3 = 7 <br> 9 × 4 ÷ 4 = 9 <br> ${frac(5,6)} ÷ ${frac(2,3)} × ${frac(2,3)} = ${frac(5,6)}</div>`),
+  pic:null,
+  gen(){
+    if(Math.random()<.4){const b=pick([F(ri(2,9)),F(1,ri(2,9))]);return B.dividend(b,F(ri(1,12)))}
+    const m=ri(0,2);
+    if(m===0){const a=ri(2,30),b=ri(2,9);return{q:`${a} ÷ ${b} × ${b} = ?`,a:F(a),steps:X(`÷ ${b} then × ${b} cancel: <b>${a}</b>.`,`÷ ${b} 再 × ${b} 互相抵消：<b>${a}</b>。`,`÷ ${b} puis × ${b} s’annulent : <b>${a}</b>.`)}}
+    if(m===1){const a=ri(2,30),b=ri(2,9);return{q:`${a} × ${b} ÷ ${b} = ?`,a:F(a),steps:X(`× ${b} then ÷ ${b} cancel: <b>${a}</b>.`,`× ${b} 再 ÷ ${b} 互相抵消：<b>${a}</b>。`,`× ${b} puis ÷ ${b} s’annulent : <b>${a}</b>.`)}}
+    const x=F(ri(1,9),ri(2,9)),y=F(ri(1,9),ri(2,9));
+    return{q:`${fh(x)} ÷ ${fh(y)} × ${fh(y)} = ?`,a:x,steps:X(`÷ ${fh(y)} then × ${fh(y)} cancel: <b>${fh(x)}</b>.`,`÷ ${fh(y)} 再 × ${fh(y)} 互相抵消：<b>${fh(x)}</b>。`,`÷ ${fh(y)} puis × ${fh(y)} s’annulent : <b>${fh(x)}</b>.`)}
+  }
+};
+
+TRICKS['1A-2.3-17']={
+  name:X('Treat the annoying part as one chunk','把討厭的東西視為一個 chunk，之後再處理','Traiter la partie pénible comme un seul bloc'),
+  zh0:'把討厭的東西視為一個 chunk，之後再處理',
+  tip:X('A <b>□</b> stuck under “÷” is annoying. Treat <b>□</b> as one <b>chunk</b>, undo the division (÷ □ is undone by × □), and solve afterwards.','卡在「÷」後面的 <b>□</b> 很討厭。把 <b>□</b> 當成一個 <b>chunk</b>，先把除法還原（÷ □ 用 × □ 還原），之後再處理。','Un <b>□</b> coincé après « ÷ » est pénible. Traitez <b>□</b> comme un <b>bloc</b>, défaites la division (÷ □ se défait par × □), puis résolvez.'),
+  explain:X(
+   `<div class="eg">24 ÷ □ = 48<br>Undo ÷ □ by × □: 24 = 48 × □<br>□ = 24 ÷ 48 = ${frac(1,2)}</div><p>Also works when the chunk is a long expression: you never need to know what the chunk equals until the end.</p>`,
+   `<div class="eg">24 ÷ □ = 48<br>用 × □ 還原 ÷ □：24 = 48 × □<br>□ = 24 ÷ 48 = ${frac(1,2)}</div><p>如果 chunk 是一長串式子也一樣：到最後之前，都不需要知道 chunk 等於多少。</p>`,
+   `<div class="eg">24 ÷ □ = 48<br>On défait ÷ □ par × □ : 24 = 48 × □<br>□ = 24 ÷ 48 = ${frac(1,2)}</div><p>Ça marche aussi quand le bloc est une longue expression : inutile de connaître sa valeur avant la fin.</p>`),
+  pic:null,
+  gen(){
+    let a,b;do{a=ri(2,60);b=ri(2,60)}while(a===b);return B.divisor(a,b,'chunk');
+  }
+};
+
+TRICKS['1A-2.3-18']={
+  name:X('First shrink to 1, then enlarge to the target','先縮小為1，再放大到希望的數字','D’abord réduire à 1, puis agrandir jusqu’à la cible'),
+  zh0:'先縮小為1，再放大到希望的數字',
+  tip:X('To go from <b>a</b> to <b>b</b>: first <b>÷ a</b> (shrink to 1), then <b>× b</b> (enlarge to b). Total multiplier = <b>b ÷ a</b>.','從 <b>a</b> 變成 <b>b</b>：先 <b>÷ a</b>（縮小成 1），再 <b>× b</b>（放大到 b）。總倍率 ＝ <b>b ÷ a</b>。','Pour passer de <b>a</b> à <b>b</b> : d’abord <b>÷ a</b> (réduire à 1), puis <b>× b</b> (agrandir jusqu’à b). Facteur total = <b>b ÷ a</b>.'),
+  explain:X(
+   `<div class="eg">48 ÷ □ = 15: shrink 48 to 1 (÷ 48), enlarge to 15 (× 15): the factor is 15 ÷ 48, so □ = 48 ÷ 15 = ${frac(16,5)}</div><div class="eg">${frac(3,4)} × ? = ${frac(9,10)}<br>${frac(3,4)} → ÷ ${frac(3,4)} → 1 → × ${frac(9,10)} → ${frac(9,10)}<br>? = ${frac(9,10)} ÷ ${frac(3,4)} = ${frac(9,10)} × ${frac(4,3)} = ${frac(6,5)}</div>`,
+   `<div class="eg">${frac(3,4)} × ? = ${frac(9,10)}<br>${frac(3,4)} → ÷ ${frac(3,4)} → 1 → × ${frac(9,10)} → ${frac(9,10)}<br>? = ${frac(9,10)} ÷ ${frac(3,4)} = ${frac(9,10)} × ${frac(4,3)} = ${frac(6,5)}</div>`,
+   `<div class="eg">${frac(3,4)} × ? = ${frac(9,10)}<br>${frac(3,4)} → ÷ ${frac(3,4)} → 1 → × ${frac(9,10)} → ${frac(9,10)}<br>? = ${frac(9,10)} ÷ ${frac(3,4)} = ${frac(9,10)} × ${frac(4,3)} = ${frac(6,5)}</div>`),
+  pic:null,
+  gen(){
+    if(Math.random()<.5){let a,b;do{a=ri(2,60);b=ri(2,60)}while(a===b);return B.divisor(a,b,'shrink')}
+    let a,b;do{a=F(ri(1,9),ri(2,9));b=F(ri(1,9),ri(2,9))}while(feq(a,b));const r=fdiv(b,a);
+    return{q:`${fh(a)} × ? = ${fh(b)}`,a:r,steps:X(`Shrink ${fh(a)} to 1 (÷ ${fh(a)}), then enlarge to ${fh(b)} (× ${fh(b)}).<br>? = ${fh(b)} ÷ ${fh(a)} = ${fh(b)} × ${fh(finv(a))} = <b>${fh(r)}</b>.`,`把 ${fh(a)} 縮小成 1（÷ ${fh(a)}），再放大到 ${fh(b)}（× ${fh(b)}）。<br>? = ${fh(b)} ÷ ${fh(a)} = ${fh(b)} × ${fh(finv(a))} = <b>${fh(r)}</b>。`,`Réduisez ${fh(a)} à 1 (÷ ${fh(a)}), puis agrandissez jusqu’à ${fh(b)} (× ${fh(b)}).<br>? = ${fh(b)} ÷ ${fh(a)} = ${fh(b)} × ${fh(finv(a))} = <b>${fh(r)}</b>.`)};
+  }
+};
+
+TRICKS['1A-2.3-19']={
+  name:X('Reciprocals: two numbers whose product is 1','相乘為1的兩數為倒數','Inverses : deux nombres dont le produit est 1'),
+  zh0:'相乘為1的兩數為倒數',
+  tip:X('<b>a × b = 1</b> means a and b are <b>reciprocals</b>. Flip a fraction upside down; keep the sign.','<b>a × b = 1</b> 表示 a 和 b 互為<b>倒數</b>。把分數上下翻轉，正負號不變。','<b>a × b = 1</b> signifie que a et b sont <b>inverses</b>. Retournez la fraction ; le signe ne change pas.'),
+  explain:X(
+   `<div class="eg">${frac(3,7)} × ${frac(7,3)} = 1 → the reciprocal of ${frac(3,7)} is ${frac(7,3)}<br>5 = ${frac(5,1)} → reciprocal ${frac(1,5)} <br> ${fh(F(-2,3))} → reciprocal ${fh(F(-3,2))}</div><p>0 has no reciprocal (nothing × 0 makes 1).</p>`,
+   `<div class="eg">${frac(3,7)} × ${frac(7,3)} = 1 → ${frac(3,7)} 的倒數是 ${frac(7,3)}<br>5 = ${frac(5,1)} → 倒數 ${frac(1,5)} <br> ${fh(F(-2,3))} → 倒數 ${fh(F(-3,2))}</div><p>0 沒有倒數（沒有任何數 × 0 會得到 1）。</p>`,
+   `<div class="eg">${frac(3,7)} × ${frac(7,3)} = 1 → l’inverse de ${frac(3,7)} est ${frac(7,3)}<br>5 = ${frac(5,1)} → inverse ${frac(1,5)} <br> ${fh(F(-2,3))} → inverse ${fh(F(-3,2))}</div><p>0 n’a pas d’inverse (aucun nombre × 0 ne donne 1).</p>`),
+  pic:null,
+  gen(){
+    const m=ri(0,3);
+    if(m===0){const f=F(sgn()*ri(1,9),ri(2,9));return{q:X(`The reciprocal of ${PF(f)} is ?`,`${PF(f)} 的倒數是 ?`,`L’inverse de ${PF(f)} est ?`),a:finv(f),steps:X(`Flip it: <b>${fh(finv(f))}</b>.`,`上下翻轉：<b>${fh(finv(f))}</b>。`,`On retourne : <b>${fh(finv(f))}</b>.`)}}
+    if(m===1){const n=sgn()*ri(2,12);return{q:X(`The reciprocal of ${P(n)} is ?`,`${P(n)} 的倒數是 ?`,`L’inverse de ${P(n)} est ?`),a:F(1,n),steps:X(`${N(n)} = ${n}/1. Flip it: <b>${fh(F(1,n))}</b>.`,`${N(n)} = ${n}/1。翻轉：<b>${fh(F(1,n))}</b>。`,`${N(n)} = ${n}/1. On retourne : <b>${fh(F(1,n))}</b>.`)}}
+    if(m===2){const f=F(sgn()*ri(1,9),ri(2,9));return{q:`${PF(f)} × ? = 1`,a:finv(f),steps:X(`? is the reciprocal of ${fh(f)}: <b>${fh(finv(f))}</b>.`,`? 是 ${fh(f)} 的倒數：<b>${fh(finv(f))}</b>。`,`? est l’inverse de ${fh(f)} : <b>${fh(finv(f))}</b>.`)}}
+    const x=pick([[0.5,2],[0.25,4],[0.2,5],[0.1,10],[0.75,4/3]]),f=F(Math.round(x[0]*100),100);
+    return{q:X(`The reciprocal of ${x[0]} is ?  <small>(fraction or decimal)</small>`,`${x[0]} 的倒數是 ?  <small>（可用分數或小數）</small>`,`L’inverse de ${x[0]} est ?  <small>(fraction ou décimal)</small>`),a:finv(f),steps:X(`${x[0]} = ${fh(f)}. Flip it: <b>${fh(finv(f))}</b>.`,`${x[0]} = ${fh(f)}。翻轉：<b>${fh(finv(f))}</b>。`,`${x[0]} = ${fh(f)}. On retourne : <b>${fh(finv(f))}</b>.`)};
+  }
+};
+
+/* ============================================================
+   Builders: shared by random generators and exemplar problems
+   ============================================================ */
+const B={
+  opp(x){ // □ + x = 0
+    return{q:`□ + ${P(x)} = 0`,a:F(-x),steps:X(`□ is the opposite of ${P(x)}: <b>□ = ${N(-x)}</b>.`,`□ 是 ${P(x)} 的相反數：<b>□ = ${N(-x)}</b>。`,`□ est l’opposé de ${P(x)} : <b>□ = ${N(-x)}</b>.`)}
+  },
+  mul(a,b){
+    return{q:`${P(a)} × ${P(b)} = ?`,a:F(a*b),steps:X(
+     `1st number ${N(a)}: ${Math.abs(a)} steps, ${a>0?'facing the future':'turn around (facing the past)'}.<br>2nd number ${N(b)}: each step is ${Math.abs(b)} long, walking <b>${b>0?'forward':'backward'}</b>.<br>${a*b>0?'You end on the future side → positive':'You end on the past side → negative'}: <b>${N(a*b)}</b>.`,
+     `第 1 個數 ${N(a)}：走 ${Math.abs(a)} 步，${a>0?'面向未來':'向後轉（面向過去）'}。<br>第 2 個數 ${N(b)}：每步 ${Math.abs(b)}，<b>${b>0?'向前':'倒退'}</b>走。<br>${a*b>0?'最後在未來那一側 → 正':'最後在過去那一側 → 負'}：<b>${N(a*b)}</b>。`,
+     `1er nombre ${N(a)} : ${Math.abs(a)} pas, ${a>0?'face à l’avenir':'demi-tour (face au passé)'}.<br>2e nombre ${N(b)} : chaque pas mesure ${Math.abs(b)}, marche <b>${b>0?'en avant':'à reculons'}</b>.<br>${a*b>0?'On finit du côté de l’avenir → positif':'On finit du côté du passé → négatif'} : <b>${N(a*b)}</b>.`)}
+  },
+  divMul(x,y){
+    const r=fmul(x,finv(y));
+    return{q:`${PF(x)} ÷ ${PF(y)} = ?`,a:r,steps:X(
+      `÷ ${fh(y)} is the same as × ${fh(finv(y))}.<br>${PF(x)} × ${PF(finv(y))} = <b>${fh(r)}</b>.`,
+      `÷ ${fh(y)} 等於 × ${fh(finv(y))}。<br>${PF(x)} × ${PF(finv(y))} = <b>${fh(r)}</b>。`,
+      `÷ ${fh(y)} équivaut à × ${fh(finv(y))}.<br>${PF(x)} × ${PF(finv(y))} = <b>${fh(r)}</b>.`)}
+  },
+  share(a,n){
+    const r=F(a,n);
+    return{q:`${a} ÷ ${n} = ?`,a:r,steps:X(`Share ${a} equally among ${n}: each gets <b>${fh(r)}</b>.`,`把 ${a} 平分成 ${n} 份：每份 <b>${fh(r)}</b>。`,`Partagez ${a} en ${n} parts égales : chacune vaut <b>${fh(r)}</b>.`)}
+  },
+  meas(x,y){ // big/small measurement with the enlarge-or-shrink decision
+    const r=fdiv(x,y),big=x.n*y.d>y.n*x.d;
+    return{q:`${fh(x)} ÷ ${fh(y)} = ?`,a:r,steps:X(`${fh(x)} is ${big?'bigger':'smaller'} than ${fh(y)}, so the answer is ${big?'more':'less'} than 1.<br>${fh(x)} ÷ ${fh(y)} = ${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>.`,`${fh(x)} 比 ${fh(y)} ${big?'大':'小'}，所以答案${big?'大於':'小於'} 1。<br>${fh(x)} ÷ ${fh(y)} = ${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>。`,`${fh(x)} est ${big?'plus grand':'plus petit'} que ${fh(y)}, donc la réponse est ${big?'supérieure':'inférieure'} à 1.<br>${fh(x)} ÷ ${fh(y)} = ${fh(x)} × ${fh(finv(y))} = <b>${fh(r)}</b>.`)}
+  },
+  zero(){return{q:`${P(-5)} × 0 = ?`,a:F(0),steps:X('Anything × 0 is <b>0</b>.','任何數 × 0 都是 <b>0</b>。','Tout nombre × 0 vaut <b>0</b>.')}},
+  one(){return{q:`${P(-5)} × 1 = ?`,a:F(-5),steps:X(`× 1 changes nothing: <b>${MINUS}5</b>.`,`× 1 不會改變：<b>${MINUS}5</b>。`,`× 1 ne change rien : <b>${MINUS}5</b>.`)}},
+  undef(n){
+    const und=X('undefined','沒有意義','non défini');
+    return{q:`${P(n)} ÷ 0 = ?`,choices:[und,'0',N(n),'1'],a:0,steps:X('Dividing by 0 produces nothing: <b>undefined</b>.','除以 0 生不出任何東西：<b>沒有意義</b>。','Diviser par 0 ne produit rien : <b>non défini</b>.')}
+  },
+  equiv(n){
+    return{q:`1 ÷ ${n} = ?`,a:F(1,n),steps:X(`÷ ${n} is the same as × ${frac(1,n)}. So 1 × ${frac(1,n)} = <b>${frac(1,n)}</b>.`,`÷ ${n} 等於 × ${frac(1,n)}。所以 1 × ${frac(1,n)} = <b>${frac(1,n)}</b>。`,`÷ ${n} équivaut à × ${frac(1,n)}. Donc 1 × ${frac(1,n)} = <b>${frac(1,n)}</b>.`)}
+  },
+  negOne(n){
+    const even=n%2===0,r=even?'1':MINUS+'1';
+    return{q:`(${MINUS}1)<sup>${n}</sup> = ?`,a:F(even?1:-1),steps:X(`Turn around ${n} times. ${n} is ${even?'even':'odd'}, so you face ${even?'the same way':'the opposite way'}: <b>${r}</b>.`,`轉身 ${n} 次。${n} 是${even?'偶':'奇'}數，所以${even?'面向原來的方向':'面向相反的方向'}：<b>${r}</b>。`,`${n} demi-tours. ${n} est ${even?'pair':'impair'}, on regarde ${even?'dans le même sens':'dans le sens opposé'} : <b>${r}</b>.`)}
+  },
+  pow(base,n){
+    let r=F(1);for(let i=0;i<n;i++)r=fmul(r,base);
+    const neg=base.n<0,bs=`(${fh(base)})`;
+    const chain=Array(n).fill(bs).join(' × ');
+    const st=neg?X(`${bs}<sup>${n}</sup> = ${chain}. That is ${n} turn-arounds: ${n%2===0?'even → positive':'odd → negative'}. Size ${Math.abs(base.n)}<sup>${n}</sup> = ${Math.abs(r.n)}. Answer: <b>${fh(r)}</b>.`,
+                    `${bs}<sup>${n}</sup> = ${chain}。也就是向後轉 ${n} 次：${n%2===0?'偶數次 → 正':'奇數次 → 負'}。大小 ${Math.abs(base.n)}<sup>${n}</sup> = ${Math.abs(r.n)}。答案：<b>${fh(r)}</b>。`,
+                    `${bs}<sup>${n}</sup> = ${chain}. Cela fait ${n} demi-tours : ${n%2===0?'pair → positif':'impair → négatif'}. Taille ${Math.abs(base.n)}<sup>${n}</sup> = ${Math.abs(r.n)}. Réponse : <b>${fh(r)}</b>.`)
+                :X(`${bs}<sup>${n}</sup> = ${chain}: multiply the tops (${base.n}<sup>${n}</sup> = ${base.n**n}) and the bottoms (${base.d}<sup>${n}</sup> = ${base.d**n}) → <b>${fh(r)}</b>.`,
+                   `${bs}<sup>${n}</sup> = ${chain}：分子相乘（${base.n}<sup>${n}</sup> = ${base.n**n}），分母相乘（${base.d}<sup>${n}</sup> = ${base.d**n}）→ <b>${fh(r)}</b>。`,
+                   `${bs}<sup>${n}</sup> = ${chain} : numérateurs (${base.n}<sup>${n}</sup> = ${base.n**n}) et dénominateurs (${base.d}<sup>${n}</sup> = ${base.d**n}) → <b>${fh(r)}</b>.`);
+    return{q:`${bs}<sup>${n}</sup> = ?`,a:r,steps:st}
+  },
+  expr(q,v,chain){
+    return{q:q+' = ?',a:F(v),steps:X(`Follow PODMAS (brackets → powers → × ÷ left to right → + −):<br>${chain}`,`依 PODMAS 順序（括號 → 次方 → 乘除由左到右 → 加減）：<br>${chain}`,`Suivez PODMAS (parenthèses → puissances → × ÷ de gauche à droite → + −) :<br>${chain}`)}
+  },
+  sqrt(k){
+    return{q:X(`√${k*k} = ?  <small>(positive)</small>`,`√${k*k} = ?  <small>（取正數）</small>`,`√${k*k} = ?  <small>(positif)</small>`),a:F(k),steps:X(`Which positive number times itself makes ${k*k}? ${k} × ${k} = ${k*k}, so <b>√${k*k} = ${k}</b>.`,`哪個正數自乘會得到 ${k*k}？${k} × ${k} = ${k*k}，所以 <b>√${k*k} = ${k}</b>。`,`Quel nombre positif multiplié par lui-même donne ${k*k} ? ${k} × ${k} = ${k*k}, donc <b>√${k*k} = ${k}</b>.`)}
+  },
+  hidMul(a,b){
+    const r=F(b,a);
+    return{q:`${a} × □ = ${b}`,a:r,steps:X(`${b} is ${b>a?'bigger':'smaller'} than ${a}: ${b>a?'enlarge':'shrink'}. Ratio = ${b} ÷ ${a} = <b>${fh(r)}</b>.`,`${b} 比 ${a} ${b>a?'大':'小'}：${b>a?'放大':'縮小'}。倍率 = ${b} ÷ ${a} = <b>${fh(r)}</b>。`,`${b} est ${b>a?'plus grand':'plus petit'} que ${a} : ${b>a?'agrandir':'réduire'}. Rapport = ${b} ÷ ${a} = <b>${fh(r)}</b>.`)}
+  },
+  dividend(b,c){
+    const r=fmul(c,b);
+    return{q:`□ ÷ ${PF(b)} = ${fh(c)}`,a:r,steps:X(`÷ ${fh(b)} shrank □ to ${fh(c)}. Enlarge it back (× ${fh(b)}): □ = ${fh(c)} × ${fh(b)} = <b>${fh(r)}</b>.`,`÷ ${fh(b)} 把 □ 縮成 ${fh(c)}。再放大回來（× ${fh(b)}）：□ = ${fh(c)} × ${fh(b)} = <b>${fh(r)}</b>。`,`÷ ${fh(b)} a réduit □ à ${fh(c)}. On agrandit de nouveau (× ${fh(b)}) : □ = ${fh(c)} × ${fh(b)} = <b>${fh(r)}</b>.`)}
+  },
+  divisor(a,b,mode){
+    const r=F(a,b);
+    const st=mode==='chunk'
+      ?X(`Treat □ as a chunk. Undo ÷ □ by × □: ${a} = ${b} × □. So □ = ${a} ÷ ${b} = <b>${fh(r)}</b>.`,`把 □ 當成 chunk。用 × □ 還原 ÷ □：${a} = ${b} × □。所以 □ = ${a} ÷ ${b} = <b>${fh(r)}</b>。`,`Traitez □ comme un bloc. On défait ÷ □ par × □ : ${a} = ${b} × □. Donc □ = ${a} ÷ ${b} = <b>${fh(r)}</b>.`)
+      :X(`Shrink ${a} to 1 (÷ ${a}), then enlarge to ${b} (× ${b}): the factor is ${b} ÷ ${a}, so ÷ □ means □ = ${a} ÷ ${b} = <b>${fh(r)}</b>.`,`把 ${a} 縮小成 1（÷ ${a}），再放大到 ${b}（× ${b}）：倍率是 ${b} ÷ ${a}，所以 ÷ □ 的 □ = ${a} ÷ ${b} = <b>${fh(r)}</b>。`,`Réduisez ${a} à 1 (÷ ${a}), puis agrandissez jusqu’à ${b} (× ${b}) : le facteur est ${b} ÷ ${a}, donc □ = ${a} ÷ ${b} = <b>${fh(r)}</b>.`);
+    return{q:`${a} ÷ □ = ${b}`,a:r,steps:st}
+  },
+  recip(x){
+    return{q:`□ × ${PF(x)} = 1`,a:finv(x),steps:X(`□ is the reciprocal of ${fh(x)}: flip it → <b>${fh(finv(x))}</b>.`,`□ 是 ${fh(x)} 的倒數：上下翻轉 → <b>${fh(finv(x))}</b>。`,`□ est l’inverse de ${fh(x)} : on retourne → <b>${fh(finv(x))}</b>.`)}
+  }
+};
+
+/* ============================================================
+   Exemplar problems (啟蒙題/典範題) — taken from the worksheets (.docx), in the same order
+   ============================================================ */
+const FIXED={
+  '1A-2.2-1':()=>[B.opp(3),B.opp(-3)],
+  '1A-2.3-1':()=>[B.mul(5,3),B.mul(5,-3),B.mul(-5,3),B.mul(-5,-3)],
+  '1A-2.3-2':()=>[B.divMul(F(4),F(2)),B.divMul(F(-4),F(2)),B.divMul(F(-4),F(-2)),B.divMul(F(4),F(-2))],
+  '1A-2.3-3':()=>[B.zero()],
+  '1A-2.3-4':()=>[B.one()],
+  '1A-2.3-5':()=>[1,2,3,4,6,8,10,12].map(n=>B.share(4,n)),
+  '1A-2.3-6':()=>[[F(1),F(1,2)],[F(1),F(1,3)],[F(1),F(1,4)],[F(2),F(1,4)],[F(3),F(1,4)],[F(4),F(1,4)]].map(([x,y])=>B.meas(x,y)),
+  '1A-2.3-7':()=>[[F(1),F(2)],[F(2),F(1)],[F(1,4),F(1,2)],[F(1,2),F(1,4)]].map(([x,y])=>B.meas(x,y)),
+  '1A-2.3-8':()=>[[F(1),F(2)],[F(2),F(1)],[F(1,4),F(1,2)],[F(1,2),F(1,4)]].map(([x,y])=>B.meas(x,y)),
+  '1A-2.3-9':()=>[B.undef(5)],
+  '1A-2.3-10':()=>[B.equiv(3)],
+  '1A-2.3-11':()=>[2,3,100,101].map(n=>B.negOne(n)),
+  '1A-2.3-12':()=>[B.pow(F(-2),2),B.pow(F(-2),3),B.pow(F(1,2),2),B.pow(F(1,2),3)],
+  '1A-2.3-13':()=>[
+    B.expr(`(${MINUS}84) ÷ 7 × 5`,-60,`(${MINUS}84) ÷ 7 = ${MINUS}12, then ${MINUS}12 × 5 = <b>${MINUS}60</b>.`),
+    B.expr(`20 ÷ 2 × (${MINUS}3) ÷ 5 ÷ (${MINUS}6) × 4`,4,`20 ÷ 2 = 10 → 10 × (${MINUS}3) = ${MINUS}30 → ${MINUS}30 ÷ 5 = ${MINUS}6 → ${MINUS}6 ÷ (${MINUS}6) = 1 → 1 × 4 = <b>4</b>.`),
+    B.expr(`42 ÷ ((${MINUS}8) + (${MINUS}6)) × (${MINUS}2)`,6,`(${MINUS}8) + (${MINUS}6) = ${MINUS}14. Then 42 ÷ (${MINUS}14) = ${MINUS}3, and ${MINUS}3 × (${MINUS}2) = <b>6</b>.`),
+    B.expr(`((${MINUS}21) + 14) × (${MINUS}2)<sup>3</sup>`,56,`(${MINUS}21) + 14 = ${MINUS}7. Power: (${MINUS}2)<sup>3</sup> = ${MINUS}8. Then (${MINUS}7) × (${MINUS}8) = <b>56</b>.`),
+    B.expr(`(${MINUS}6)<sup>2</sup> ÷ (${MINUS}3)<sup>2</sup> ÷ (${MINUS}9 ${MINUS} (${MINUS}7))<sup>3</sup> × (${MINUS}2)`,1,`${MINUS}9 ${MINUS} (${MINUS}7) = ${MINUS}2. Powers: 36, 9 and (${MINUS}2)<sup>3</sup> = ${MINUS}8. Then 36 ÷ 9 = 4 → 4 ÷ (${MINUS}8) = ${MINUS}${frac(1,2)} → ${MINUS}${frac(1,2)} × (${MINUS}2) = <b>1</b>.`),
+    B.expr(`(${MINUS}6) × (${MINUS}7) × (${MINUS}8) × 0 ${MINUS} 25 × (${MINUS}2)<sup>3</sup>`,200,`The first part has × 0, so it is <b>0</b>. Power: (${MINUS}2)<sup>3</sup> = ${MINUS}8, then 25 × (${MINUS}8) = ${MINUS}200. Finally 0 ${MINUS} (${MINUS}200) = <b>200</b>.`)
+  ],
+  '1A-2.3-14':()=>[2,0,1,17].map(k=>B.sqrt(k)),
+  '1A-2.3-15':()=>[B.hidMul(24,8),B.hidMul(24,48)],
+  '1A-2.3-16':()=>[B.dividend(F(3),F(2)),B.dividend(F(1,3),F(6))],
+  '1A-2.3-17':()=>[B.divisor(24,48,'chunk')],
+  '1A-2.3-18':()=>[B.divisor(48,15,'shrink')],
+  '1A-2.3-19':()=>[B.recip(F(3)),B.recip(F(1,3))]
+};
+
+/* ============================================================
+   Tree (volume > chapter > section > trick)
+   ============================================================ */
+const TREE=[{vol:'1A',chapters:[{ch:2,sections:[
+  {id:'2.2',tricks:['1A-2.2-1']},
+  {id:'2.3',tricks:['1A-2.3-1','1A-2.3-2','1A-2.3-3','1A-2.3-4','1A-2.3-5','1A-2.3-6','1A-2.3-7','1A-2.3-8','1A-2.3-9','1A-2.3-10','1A-2.3-11','1A-2.3-12','1A-2.3-13','1A-2.3-14','1A-2.3-15','1A-2.3-16','1A-2.3-17','1A-2.3-18','1A-2.3-19']}
+]}]}];
+const LOC={};
+TREE.forEach(v=>v.chapters.forEach(c=>c.sections.forEach(s=>s.tricks.forEach((id,i)=>{LOC[id]={vol:v.vol,ch:c.ch,sec:s.id,n:i+1}}))));
+
+/* ============================================================
+   Progress (localStorage) and uploads (IndexedDB, in-memory fallback)
+   ============================================================ */
+const MASTER_STREAK=3;
+let prog={};
+try{prog=JSON.parse(localStorage.getItem('mm_progress_v1')||'{}')}catch(e){}
+const savep=()=>{try{localStorage.setItem('mm_progress_v1',JSON.stringify(prog))}catch(e){}};
+const pg=id=>prog[id]||(prog[id]={streak:0,mastered:false,tries:0,right:0});
+
+let dbp=null;const mem=[];let memId=1,usingMem=false;
+const db=()=>dbp||(dbp=new Promise((res,rej)=>{
+  try{
+    const r=indexedDB.open('mm_uploads',1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('files',{keyPath:'id',autoIncrement:true}).createIndex('trick','trick');
+    r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);
+  }catch(e){rej(e)}
+}));
+async function store(fn,memfn){
+  if(!usingMem){try{const d=await db();return await fn(d)}catch(e){usingMem=true}}
+  return memfn();
+}
+const dbAll=trick=>store(d=>new Promise((res,rej)=>{const q=d.transaction('files').objectStore('files').index('trick').getAll(trick);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}),()=>mem.filter(x=>x.trick===trick));
+const dbAdd=rec=>store(d=>new Promise((res,rej)=>{const q=d.transaction('files','readwrite').objectStore('files').add(rec);q.onsuccess=()=>res();q.onerror=()=>rej(q.error)}),()=>{mem.push({...rec,id:memId++})});
+const dbDel=id=>store(d=>new Promise((res,rej)=>{const q=d.transaction('files','readwrite').objectStore('files').delete(id);q.onsuccess=()=>res();q.onerror=()=>rej(q.error)}),()=>{const i=mem.findIndex(x=>x.id===id);if(i>=0)mem.splice(i,1)});
+
+/* ============================================================
+   UI
+   ============================================================ */
+let current=null,tab='trick',Q=null,lastQ='',attempts=0,chosen=null,revealed=false;
+
+function renderChrome(){
+  document.documentElement.lang=LANG==='zh'?'zh-Hant':LANG;
+    document.getElementById('resetAll').textContent=u('reset');
+  const l=document.getElementById('lang');
+  l.innerHTML=LANGS.map(([c,n])=>`<button data-l="${c}" class="${c===LANG?'on':''}">${n}</button>`).join('');
+  l.querySelectorAll('button').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
+}
+function setLang(l){
+  LANG=l;try{localStorage.setItem('mm_lang',l)}catch(e){}
+  renderChrome();renderTree();renderMain();
+}
+const trickName=id=>tx(TRICKS[id].name);
+
+function renderTree(){
+  const el=document.getElementById('tree');
+  el.innerHTML=TREE.map(v=>`
+  <details class="vol" open><summary>${u('vol')} ${v.vol}</summary><div class="children">
+   ${v.chapters.map(c=>`<details class="chap" open><summary>${u('chapter')} ${c.ch}</summary><div class="children">
+    ${c.sections.map(s=>`<details class="sec" open><summary>${u('section')} ${s.id}</summary><div class="children">
+      ${s.tricks.map((id,i)=>{const t=TRICKS[id],p=prog[id]||{};
+        return `<button class="trick ${p.mastered?'done':''} ${current===id?'active':''}" data-id="${id}">
+          <span class="n">${p.mastered?'★':i+1}</span><span>${u('trick')} ${i+1}<br><span class="zh">${trickName(id)}</span></span></button>`}).join('')}
+    </div></details>`).join('')}
+   </div></details>`).join('')}
+  </div></details>`).join('');
+  el.querySelectorAll('.trick').forEach(b=>b.onclick=()=>open(b.dataset.id));
+}
+
+function open(id){current=id;tab='trick';Q=null;exIdx=0;exList=null;exSt=null;renderTree();renderMain();document.getElementById('main').scrollTop=0}
+
+function renderMain(){
+  const m=document.getElementById('main');
+  if(!current){
+    m.innerHTML=`<div class="card"><h2>${u('welcomeT')}</h2><p>${u('welcome1')}</p><p>${u('welcome2')}</p></div>`;return;
+  }
+  const t=TRICKS[current],L=LOC[current],p=pg(current);
+  m.innerHTML=`
+    <div class="crumb">${u('vol')} ${L.vol} › ${u('chapter')} ${L.ch} › ${u('section')} ${L.sec} › ${u('trick')} ${L.n}</div>
+    <h2>${trickName(current)}${p.mastered?`<span class="mastered">${u('mastered')}</span>`:''}</h2>
+    <div class="tabs">${[['trick','tabTrick'],['picture','tabPicture'],['exemplar','tabExemplar'],['random','tabRandom']].map(([k,l])=>`<button data-t="${k}" class="${tab===k?'on':''}">${u(l)}</button>`).join('')}</div>
+    <div id="pane"></div>`;
+  m.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;Q=null;renderMain()});
+  tab==='trick'?renderTrick():tab==='picture'?renderPicture():tab==='exemplar'?renderExemplar():renderPractice();
+}
+
+function renderTrick(){
+  const t=TRICKS[current];
+  document.getElementById('pane').innerHTML=`<div class="card explain">
+    <div class="tip">${tx(t.tip)}</div>
+    <details class="elab"><summary>${u('elab')}</summary>${t.tipLong?`<p>${tx(t.tipLong)}</p>`:''}${tx(t.explain)}</details>
+    <p style="margin-top:18px"><button class="btn primary" id="goPractice">${u('goPractice')}</button></p></div>`;
+  document.getElementById('goPractice').onclick=()=>{tab='exemplar';Q=null;renderMain()};
+}
+function renderPicture(){
+  const t=TRICKS[current];
+  document.getElementById('pane').innerHTML=`<div class="card explain">
+    <div class="tip small">${tx(t.tip)}</div>
+    ${t.pic?tx(t.pic):`<p class="soon">${u('soon')}</p>`}
+    ${t.picElab?`<details class="elab"><summary>${u('elab')}</summary><p>${tx(t.picElab)}</p></details>`:''}</div>`;
+}
+
+let exSt=null;
+function renderExemplar(){
+  if(!exList)exList=(FIXED[current]||(()=>[]))();
+  if(!exSt)exSt=exList.map(()=>({v:'',chosen:null,status:null,rev:false}));
+  const pane=document.getElementById('pane');
+  pane.innerHTML=`
+  <div class="card wide">
+    <div class="stats"><span id="exCount"></span><span>${u('exNote')}</span></div>
+    <div class="exgrid">${exList.map((q,i)=>{const st=exSt[i];return `<div class="excard ${st.status||''}" data-i="${i}">
+      <div class="q"><span class="qno">${i+1}.</span> ${tx(q.q)}</div>
+      ${q.choices?`<div class="choices">${q.choices.map((c,k)=>`<button class="choice ${st.chosen===k?'sel':''}" data-k="${k}"><b>${'ABCD'[k]}</b> <span>${tx(c)}</span></button>`).join('')}</div>`
+        :`<input class="ans" autocomplete="off" inputmode="text" placeholder="${u('yourAnswer')}" value="${st.v.replace(/"/g,'&quot;')}">`}
+      <div class="row"><button class="btn sm exchk">${u('check')}</button></div>
+      <div class="exfb"></div>
+      <div class="sol"></div></div>`}).join('')}</div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn primary" id="chkAll">${u('checkAll')}</button>
+      <button class="btn" id="showAll">${u('show')}</button>
+      <button class="btn" id="again">${u('again')}</button>
+      <button class="btn" id="toRandom">${u('toRandom')} →</button>
+    </div>
+  </div>
+  <div class="card">
+    <b>${u('upload')}</b> <span style="color:var(--muted);font-size:14px">${u('uploadNote')}</span>
+    <div class="row" style="margin-top:10px"><input type="file" id="file" accept="image/*,application/pdf" multiple></div>
+    <div class="uploads" id="uploads"></div>
+  </div>`;
+  pane.querySelectorAll('.excard').forEach(card=>{
+    const i=+card.dataset.i,inp=card.querySelector('input.ans');
+    if(inp){inp.oninput=()=>{exSt[i].v=inp.value};inp.onkeydown=e=>{if(e.key==='Enter')exCheck(i)}}
+    card.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{exSt[i].chosen=+b.dataset.k;card.querySelectorAll('.choice').forEach(x=>x.classList.toggle('sel',x===b))});
+    card.querySelector('.exchk').onclick=()=>exCheck(i);
+    exPaint(i);
+  });
+  document.getElementById('chkAll').onclick=()=>exList.forEach((_,i)=>exCheck(i));
+  document.getElementById('showAll').onclick=()=>exList.forEach((_,i)=>exShow(i));
+  document.getElementById('toRandom').onclick=()=>{tab='random';Q=null;renderMain()};
+  document.getElementById('again').onclick=()=>{exSt=null;renderExemplar();window.scrollTo(0,0);document.getElementById('main').scrollTop=0};
+  document.getElementById('file').onchange=async e=>{
+    for(const f of e.target.files)await dbAdd({trick:current,name:f.name,type:f.type,blob:f,time:Date.now()});
+    e.target.value='';loadUploads();
+  };
+  loadUploads();exCount();
+}
+function exCount(){const el=document.getElementById('exCount');if(el)el.textContent=`${u('exDone')}: ${exList.filter((_,i)=>exSt[i].status==='ok').length}/${exList.length}`}
+function exPaint(i){
+  const card=document.querySelector(`.excard[data-i="${i}"]`);if(!card)return;
+  const st=exSt[i],q=exList[i];
+  card.className='excard '+(st.status||'');
+  card.querySelector('.exfb').textContent=st.status==='ok'?'✓ '+u('okShort'):st.status==='bad'?'✗ '+u('badShort'):'';
+  const sol=card.querySelector('.sol');
+  if(st.rev){sol.innerHTML=`<div class="ans-line">${u('answer')}: ${q.choices?tx(q.choices[q.a]):fh(q.a)}</div>${tx(q.steps)}`;sol.classList.add('show')}else sol.classList.remove('show');
+}
+function exCheck(i){
+  const st=exSt[i],q=exList[i];let ok;
+  if(q.choices){if(st.chosen===null)return;ok=st.chosen===q.a}
+  else{const v=parseAns(st.v||'');if(!v){st.status='bad';exPaint(i);return}ok=feq(v,q.a)}
+  st.status=ok?'ok':'bad';
+  if(ok){exDone()[i]=true;savep()}
+  exPaint(i);exCount();
+}
+function exShow(i){exSt[i].rev=true;exPaint(i)}
+
+let exIdx=0,exList=null;
+function newQuestion(){
+  let q,tries=0;
+  do{q=TRICKS[current].gen();tries++}while(JSON.stringify(q.q)===lastQ&&tries<20);
+  lastQ=JSON.stringify(q.q);Q=q;attempts=0;chosen=null;revealed=false;
+}
+function exDone(){const p=pg(current);return p.ex||(p.ex={})}
+
+function renderPractice(){
+  const ex=tab==='exemplar';
+  if(ex){
+    if(!exList)exList=(FIXED[current]||(()=>[]))();
+    if(!Q){Q=exList[exIdx];attempts=0;chosen=null;revealed=false}
+  }else if(!Q)newQuestion();
+  const p=pg(current);
+  const pane=document.getElementById('pane');
+  const mc=Q.choices;
+  const done=exDone(),nDone=exList?exList.filter((_,i)=>done[i]).length:0;
+  pane.innerHTML=`
+  <div class="card">
+    ${ex?`<div class="exnav">${exList.map((_,i)=>`<button class="dot ${i===exIdx?'cur':''} ${done[i]?'ok':''}" data-i="${i}">${i+1}</button>`).join('')}</div>
+         <div class="stats"><span>${u('exDone')}: ${nDone}/${exList.length}</span><span>${u('exNote')}</span></div>`
+       :`<div class="stars">${Array.from({length:MASTER_STREAK},(_,i)=>`<span class="${i<p.streak||p.mastered?'on':''}">★</span>`).join('')}</div>
+         <div class="stats"><span>${u('streak')}: ${p.streak}/${MASTER_STREAK}</span><span>${u('correct')}: ${p.right}/${p.tries}</span></div>`}
+    <div class="q" style="margin-top:14px">${ex?`<span class="qno">${exIdx+1}.</span> `:''}${tx(Q.q)}</div>
+    ${mc?`<div class="choices">${mc.map((c,i)=>`<button class="choice ${chosen===i?'sel':''}" data-i="${i}"><b>${'ABCD'[i]}</b> <span>${tx(c)}</span></button>`).join('')}</div>`
+       :`<div class="row" style="margin-bottom:6px"><input class="ans" id="ans" autocomplete="off" inputmode="text" placeholder="${u('yourAnswer')}"></div>
+         <div style="color:var(--muted);font-size:13px;margin-bottom:10px">${u('typeHint')}</div>`}
+    <div class="row">
+      <button class="btn primary" id="check">${u('check')}</button>
+      <button class="btn" id="show">${u('show')}</button>
+      ${ex?`<button class="btn" id="prev" ${exIdx===0?'disabled':''}>◀ ${u('prev')}</button>
+            <button class="btn" id="next">${exIdx<exList.length-1?u('next')+' ▶':u('toRandom')+' →'}</button>`
+          :`<button class="btn" id="similar">${u('similar')}</button>`}
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="sol" id="sol"></div>
+  </div>
+  <div class="card">
+    <b>${u('upload')}</b> <span style="color:var(--muted);font-size:14px">${u('uploadNote')}</span>
+    <div class="row" style="margin-top:10px"><input type="file" id="file" accept="image/*,application/pdf" multiple></div>
+    <div class="uploads" id="uploads"></div>
+  </div>`;
+  const ans=document.getElementById('ans');
+  if(ans){ans.focus();ans.addEventListener('keydown',e=>{if(e.key==='Enter')check()})}
+  pane.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{chosen=+b.dataset.i;pane.querySelectorAll('.choice').forEach(x=>x.classList.toggle('sel',x===b))});
+  document.getElementById('check').onclick=check;
+  document.getElementById('show').onclick=()=>showSolution();
+  if(ex){
+    pane.querySelectorAll('.dot').forEach(b=>b.onclick=()=>{exIdx=+b.dataset.i;Q=null;renderPractice()});
+    document.getElementById('prev').onclick=()=>{exIdx=Math.max(0,exIdx-1);Q=null;renderPractice()};
+    document.getElementById('next').onclick=()=>{if(exIdx<exList.length-1){exIdx++;Q=null;renderPractice()}else{tab='random';Q=null;renderMain()}};
+  }else document.getElementById('similar').onclick=()=>{newQuestion();renderPractice()};
+  document.getElementById('file').onchange=async e=>{
+    for(const f of e.target.files)await dbAdd({trick:current,name:f.name,type:f.type,blob:f,time:Date.now()});
+    e.target.value='';loadUploads();
+  };
+  loadUploads();
+  if(revealed)showSolution(true);
+}
+
+function check(){
+  const ex=tab==='exemplar';
+  const fb=document.getElementById('fb');let ok=false;
+  if(Q.choices){
+    if(chosen===null){fb.className='fb bad';fb.textContent=u('pickFirst');return}
+    ok=chosen===Q.a;
+  }else{
+    const v=parseAns(document.getElementById('ans').value);
+    if(!v){fb.className='fb bad';fb.textContent=u('needNumber');return}
+    ok=feq(v,Q.a);
+  }
+  const p=pg(current);
+  attempts++;
+  if(ok){
+    const first=attempts===1&&!revealed;
+    if(ex){
+      exDone()[exIdx]=true;savep();
+      fb.className='fb ok';fb.textContent=first?u('okFirst'):u('okLater');
+      const d=document.querySelectorAll('.dot')[exIdx];if(d)d.classList.add('ok');
+      const st=document.querySelector('.stats span');if(st)st.textContent=`${u('exDone')}: ${exList.filter((_,i)=>exDone()[i]).length}/${exList.length}`;
+      return;
+    }
+    if(first){p.streak++;p.tries++;p.right++;if(p.streak>=MASTER_STREAK&&!p.mastered)p.mastered=true}
+    fb.className='fb ok';
+    fb.textContent=first?(p.mastered&&p.streak===MASTER_STREAK?u('okMaster'):u('okFirst')):u('okLater');
+    savep();renderTree();refreshStats();
+  }else{
+    if(!ex&&attempts===1&&!revealed){p.streak=0;p.tries++;savep();refreshStats()}
+    fb.className='fb bad';
+    fb.innerHTML=attempts>=2?`${u('badHint')} ${tx(TRICKS[current].tipLong||TRICKS[current].tip)}`:u('bad1');
+  }
+}
+function refreshStats(){
+  if(tab==='exemplar')return;
+  const p=pg(current);
+  const st=document.querySelector('.stats');if(st)st.innerHTML=`<span>${u('streak')}: ${p.streak}/${MASTER_STREAK}</span><span>${u('correct')}: ${p.right}/${p.tries}</span>`;
+  document.querySelectorAll('.stars span').forEach((s,i)=>s.classList.toggle('on',i<p.streak||p.mastered));
+}
+function showSolution(quiet){
+  const wasAttempted=attempts>0||revealed;
+  revealed=true;
+  const sol=document.getElementById('sol');
+  const ansTxt=Q.choices?tx(Q.choices[Q.a]):fh(Q.a);
+  sol.innerHTML=`<div class="ans-line">${u('answer')}: ${ansTxt}</div>${tx(Q.steps)}`;
+  sol.classList.add('show');
+  if(quiet!==true&&!wasAttempted&&tab!=='exemplar'){const p=pg(current);p.streak=0;p.tries++;savep();refreshStats()}
+}
+async function loadUploads(){
+  const box=document.getElementById('uploads');if(!box)return;
+  const items=await dbAll(current);
+  box.innerHTML=items.length?'':`<span style="color:var(--muted);font-size:14px">${u('noUploads')}</span>`;
+  items.forEach(it=>{
+    const url=URL.createObjectURL(it.blob);
+    const d=document.createElement('div');d.className='up';
+    d.innerHTML=(it.type.startsWith('image/')?`<a href="${url}" target="_blank"><img src="${url}" alt=""></a>`:`<a href="${url}" target="_blank"><div class="pdf">PDF</div></a>`)+
+      `<div class="cap"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it.name.replace(/</g,'&lt;')}</span><button title="${u('del')}">✕</button></div>`;
+    d.querySelector('button').onclick=async()=>{await dbDel(it.id);loadUploads()};
+    box.appendChild(d);
+  });
+}
+
+document.getElementById('resetAll').onclick=()=>{
+  if(confirm(u('resetConfirm'))){prog={};savep();renderTree();renderMain()}
+};
+renderChrome();renderTree();renderMain();
+</script>
+</body>
+</html>
